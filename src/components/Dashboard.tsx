@@ -32,7 +32,7 @@ export default function Dashboard() {
       </div>
 
       <div className="bg-white rounded-lg shadow p-6">
-        <h3 className="text-lg font-semibold mb-4">Recent documents</h3>
+        <h3 className="text-lg font-semibold mb-4">My Folders</h3>
         <div className="grid md:grid-cols-2 gap-4">
           {documents.map(d => (
             <DocumentCard key={d.id} doc={d} />
