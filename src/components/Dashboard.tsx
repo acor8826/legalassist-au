@@ -1,5 +1,5 @@
 import React from 'react';
-import DocumentCard from './DocumentCard';
+import DocumentCard from './FolderCard';
 
 const documents = [
   { id: 1, title: 'Form 1 – Initiating Application.pdf', type: 'Court Form', date: '10/09/2025', suggestion: 'Prepare supporting affidavit' },
