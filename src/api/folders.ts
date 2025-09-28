@@ -2,7 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
   // On Vercel, VITE_API_URL can be left unset, and we'll default to /api
-  baseURL: import.meta.env.VITE_API_URL || "/api",
+  baseURL: import.meta.env.VITE_API_URL || "/list",
 });
 
 export interface Folder {
