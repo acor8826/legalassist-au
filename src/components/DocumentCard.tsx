@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { getList, Folder } from "../api/folders";
-import { buildFolderTree, FolderTree } from "../api/helpers/folderTree";
+import { buildFolderTree } from "../api/helpers/folderTree";
 
 // Global flag to prevent multiple API calls across all component instances
 let isApiCallInProgress = false;
@@ -10,21 +10,16 @@ export default function DocumentCard() {
   const [folders, setFolders] = useState<Folder[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Memoize the tree building to prevent unnecessary recalculations
   const trees = useMemo(() => {
     if (folders.length === 0) return [];
     const result = buildFolderTree(folders);
-    console.log("Trees built:", result.length, result.map((t) => t.parent.name));
+    console.log("Trees built:", result.length, result.map((t: any) => t.parent.name));
     return result;
   }, [folders]);
 
   useEffect(() => {
-    console.log(
-      "DocumentCard: useEffect running, isApiCallInProgress:",
-      isApiCallInProgress
-    );
+    console.log("DocumentCard: useEffect running, isApiCallInProgress:", isApiCallInProgress);
 
-    // If we already have cached data, use it
     if (cachedFolders) {
       console.log("DocumentCard: Using cached data");
       setFolders(cachedFolders);
@@ -32,10 +27,8 @@ export default function DocumentCard() {
       return;
     }
 
-    // If API call is already in progress, wait for it
     if (isApiCallInProgress) {
       console.log("DocumentCard: API call already in progress, waiting...");
-      // Check every 100ms if the API call completed
       const checkInterval = setInterval(() => {
         if (cachedFolders) {
           console.log("DocumentCard: API call completed, using cached data");
@@ -44,32 +37,25 @@ export default function DocumentCard() {
           clearInterval(checkInterval);
         }
       }, 100);
-
-      // Cleanup interval after 10 seconds max
       setTimeout(() => clearInterval(checkInterval), 10000);
       return;
     }
 
-    // Start the API call
     isApiCallInProgress = true;
     let isMounted = true;
 
     getList()
       .then((data: Folder[]) => {
         console.log("DocumentCard: API returned", data.length, "folders");
-        cachedFolders = data; // Cache the result
-        if (isMounted) {
-          setFolders(data);
-        }
+        cachedFolders = data;
+        if (isMounted) setFolders(data);
       })
       .catch((error) => {
         console.error("DocumentCard: API error", error);
       })
       .finally(() => {
         isApiCallInProgress = false;
-        if (isMounted) {
-          setLoading(false);
-        }
+        if (isMounted) setLoading(false);
       });
 
     return () => {
@@ -85,12 +71,12 @@ export default function DocumentCard() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {trees.map((tree) => (
+      {trees.map((tree: any) => (
         <div
-          key={tree.parent.id} // Use just the parent ID as key since each parent should be unique
+          key={tree.parent.id}
           className="border border-slate-200 rounded-lg p-6 hover:border-sky-300 transition"
         >
-          {/* Parent folder title as hyperlink */}
+          {/* ✅ Parent folder title as hyperlink */}
           <h2 className="font-bold text-lg mb-4">
             <a
               href={tree.parent.webViewLink}
