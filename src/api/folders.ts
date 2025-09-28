@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://35.225.132.16:8000",
+  // On Vercel, VITE_API_URL can be left unset, and we'll default to /api
+  baseURL: import.meta.env.VITE_API_URL || "/api",
 });
 
 export interface Folder {

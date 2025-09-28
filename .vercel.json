@@ -1,4 +1,10 @@
 {
   "buildCommand": "npx vite build",
-  "outputDirectory": "dist"
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "http://35.225.132.16:8000/:path*"
+    }
+  ]
 }
