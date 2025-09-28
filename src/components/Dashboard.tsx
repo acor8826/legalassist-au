@@ -25,7 +25,7 @@ export default function Dashboard() {
       </div>
 
       <div className="bg-white rounded-lg shadow p-6">
-        <h3 className="text-lg font-semibold mb-4">Recent documents</h3>
+        <h3 className="text-lg font-semibold mb-4">My Case Files</h3>
         {/* Single DocumentCard component that fetches and displays Google Drive folders */}
         <DocumentCard />
       </div>
