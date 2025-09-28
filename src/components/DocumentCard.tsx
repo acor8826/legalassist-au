@@ -14,16 +14,19 @@ export default function DocumentCard() {
   const trees = useMemo(() => {
     if (folders.length === 0) return [];
     const result = buildFolderTree(folders);
-    console.log('Trees built:', result.length, result.map(t => t.parent.name));
+    console.log("Trees built:", result.length, result.map((t) => t.parent.name));
     return result;
   }, [folders]);
 
   useEffect(() => {
-    console.log('DocumentCard: useEffect running, isApiCallInProgress:', isApiCallInProgress);
-    
+    console.log(
+      "DocumentCard: useEffect running, isApiCallInProgress:",
+      isApiCallInProgress
+    );
+
     // If we already have cached data, use it
     if (cachedFolders) {
-      console.log('DocumentCard: Using cached data');
+      console.log("DocumentCard: Using cached data");
       setFolders(cachedFolders);
       setLoading(false);
       return;
@@ -31,17 +34,17 @@ export default function DocumentCard() {
 
     // If API call is already in progress, wait for it
     if (isApiCallInProgress) {
-      console.log('DocumentCard: API call already in progress, waiting...');
+      console.log("DocumentCard: API call already in progress, waiting...");
       // Check every 100ms if the API call completed
       const checkInterval = setInterval(() => {
         if (cachedFolders) {
-          console.log('DocumentCard: API call completed, using cached data');
+          console.log("DocumentCard: API call completed, using cached data");
           setFolders(cachedFolders);
           setLoading(false);
           clearInterval(checkInterval);
         }
       }, 100);
-      
+
       // Cleanup interval after 10 seconds max
       setTimeout(() => clearInterval(checkInterval), 10000);
       return;
@@ -53,14 +56,14 @@ export default function DocumentCard() {
 
     getList()
       .then((data: Folder[]) => {
-        console.log('DocumentCard: API returned', data.length, 'folders');
+        console.log("DocumentCard: API returned", data.length, "folders");
         cachedFolders = data; // Cache the result
         if (isMounted) {
           setFolders(data);
         }
       })
       .catch((error) => {
-        console.error('DocumentCard: API error', error);
+        console.error("DocumentCard: API error", error);
       })
       .finally(() => {
         isApiCallInProgress = false;
@@ -78,17 +81,26 @@ export default function DocumentCard() {
     return <p className="text-slate-500">Loading folders...</p>;
   }
 
-  console.log('DocumentCard: Rendering', trees.length, 'trees');
+  console.log("DocumentCard: Rendering", trees.length, "trees");
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {trees.map((tree, index) => (
+      {trees.map((tree) => (
         <div
           key={tree.parent.id} // Use just the parent ID as key since each parent should be unique
           className="border border-slate-200 rounded-lg p-6 hover:border-sky-300 transition"
         >
-          {/* Parent folder title */}
-          <h2 className="font-bold text-lg mb-4">{tree.parent.name}</h2>
+          {/* Parent folder title as hyperlink */}
+          <h2 className="font-bold text-lg mb-4">
+            <a
+              href={tree.parent.webViewLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sky-700 hover:underline"
+            >
+              {tree.parent.name}
+            </a>
+          </h2>
 
           {/* Children list */}
           <div className="space-y-4">
