@@ -12,9 +12,10 @@ const UploadIcon = () => (
   </svg>
 );
 
-const BotIcon = () => (
+// Legal scale icon for Senior Counsel
+const LegalIcon = () => (
   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
   </svg>
 );
 
@@ -44,7 +45,7 @@ export default function AIChat() {
       setMessages(JSON.parse(saved));
     } else {
       setMessages([
-        { role: 'ai', text: "G'day! I'm your AI assistant. How can I help with your documents today?" }
+        { role: 'ai', text: "G'day! I'm your artificial Senior Counsel . How can I help with your legal documents and case matters today?" }
       ]);
     }
   }, []);
@@ -131,14 +132,14 @@ export default function AIChat() {
           {messages.map((m, i) => (
             <div key={i} className="flex gap-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
               <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                m.role === 'ai' ? 'bg-sky-100 text-sky-700' : 'bg-slate-200 text-slate-700'
+                m.role === 'ai' ? 'bg-amber-100 text-amber-800' : 'bg-slate-200 text-slate-700'
               }`}>
-                {m.role === 'ai' ? <BotIcon /> : <UserIcon />}
+                {m.role === 'ai' ? <LegalIcon /> : <UserIcon />}
               </div>
               <div className="flex-1 space-y-2">
                 <div className="flex items-center gap-2">
                   <span className="font-semibold text-sm text-slate-900">
-                    {m.role === 'ai' ? 'AI Assistant' : 'You'}
+                    {m.role === 'ai' ? 'Senior Counsel' : 'You'}
                   </span>
                 </div>
                 <div className="prose prose-slate max-w-none">
@@ -149,12 +150,12 @@ export default function AIChat() {
           ))}
           {isTyping && (
             <div className="flex gap-4 animate-in fade-in slide-in-from-bottom-2">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center">
-                <BotIcon />
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center">
+                <LegalIcon />
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="font-semibold text-sm text-slate-900">AI Assistant</span>
+                  <span className="font-semibold text-sm text-slate-900">Senior Counsel</span>
                 </div>
                 <div className="flex gap-1">
                   <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
@@ -170,7 +171,7 @@ export default function AIChat() {
 
       <div className="border-t border-slate-200 bg-white/95 backdrop-blur-sm">
         <div className="max-w-3xl mx-auto px-4 py-4">
-          <div className="relative bg-white border border-slate-300 rounded-2xl shadow-lg focus-within:border-sky-500 focus-within:ring-2 focus-within:ring-sky-100 transition-all">
+          <div className="relative bg-white border border-slate-300 rounded-2xl shadow-lg focus-within:border-amber-600 focus-within:ring-2 focus-within:ring-amber-100 transition-all">
             <textarea
               ref={textareaRef}
               value={input}
@@ -193,7 +194,7 @@ export default function AIChat() {
                 disabled={!input.trim()}
                 className={`p-2.5 rounded-xl transition-all ${
                   input.trim()
-                    ? 'bg-sky-600 hover:bg-sky-700 text-white shadow-md hover:shadow-lg'
+                    ? 'bg-amber-700 hover:bg-amber-800 text-white shadow-md hover:shadow-lg'
                     : 'bg-slate-100 text-slate-400 cursor-not-allowed'
                 }`}
               >
