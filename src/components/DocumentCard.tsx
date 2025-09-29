@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { getList, Folder } from "../api/folders";
 import { buildFolderTree } from "../api/helpers/folderTree";
-import { Link } from "react-router-dom";  // ✅ React Router
+import { Link } from "react-router-dom"; // ✅ React Router
 
 let isApiCallInProgress = false;
 let cachedFolders: Folder[] | null = null;
@@ -42,7 +42,9 @@ export default function DocumentCard() {
         cachedFolders = data;
         if (isMounted) setFolders(data);
       })
-      .catch((error) => console.error("DocumentCard API error", error))
+      .catch((error) => {
+        console.error("DocumentCard: API error", error);
+      })
       .finally(() => {
         isApiCallInProgress = false;
         if (isMounted) setLoading(false);
@@ -53,7 +55,9 @@ export default function DocumentCard() {
     };
   }, []);
 
-  if (loading) return <p className="text-slate-500">Loading folders...</p>;
+  if (loading) {
+    return <p className="text-slate-500">Loading folders...</p>;
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -62,10 +66,10 @@ export default function DocumentCard() {
           key={tree.parent.id}
           className="border border-slate-200 rounded-lg p-6 hover:border-sky-300 transition"
         >
-          {/* ✅ Link parent folder name to our FolderPage */}
+          {/* ✅ Use folder.id instead of webViewLink */}
           <h2 className="font-bold text-lg mb-4">
             <Link
-              to={`/folder/${tree.parent.id}`}   // Pass folderId in URL
+              to={`/folder/${tree.parent.id}`} // 👈 Navigate using backend folder id
               className="text-sky-700 hover:underline"
             >
               {tree.parent.name}
@@ -77,13 +81,23 @@ export default function DocumentCard() {
               <div key={child.id} className="border-t pt-3">
                 <h4 className="font-medium text-slate-800">{child.name}</h4>
                 <p className="text-sm text-slate-500">Folder</p>
+
+                {/* Child hyperlink also uses folder id */}
+                <Link
+                  to={`/folder/${child.id}`}
+                  className="text-sm text-sky-700 hover:underline block truncate"
+                >
+                  Open in Litigation Assistant
+                </Link>
+
+                {/* External preview link to Google Drive, if needed */}
                 <a
                   href={child.webViewLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-sky-700 hover:underline block truncate"
+                  className="inline-block text-xs mt-2 text-sky-600 hover:underline"
                 >
-                  {child.webViewLink}
+                  Preview in Google Drive
                 </a>
               </div>
             ))}
