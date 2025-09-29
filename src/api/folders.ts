@@ -14,7 +14,7 @@ export interface Folder {
 
 export const getList = async (): Promise<Folder[]> => {
   console.log("Calling /list endpoint…");
-  const res = await api.get<{ folders: Folder[] }>("/list");
+  const res = await api.get<{ folders: Folder[] }>("list_all_folders");
   console.log("Response received:", res.data);
   return res.data.folders;
 };

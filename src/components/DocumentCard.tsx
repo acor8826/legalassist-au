@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { Folder as FolderIcon } from "lucide-react";
 import { getList, Folder } from "../api/folders";
 import { buildFolderTree } from "../api/helpers/folderTree";
 
@@ -65,56 +66,68 @@ export default function DocumentCard() {
   }, []);
 
   if (loading) {
-    return <p className="text-slate-500">Loading folders...</p>;
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="w-8 h-8 border-4 border-sky-200 border-t-sky-600 rounded-full animate-spin"></div>
+        <p className="ml-3 text-slate-500">Loading folders...</p>
+      </div>
+    );
   }
 
   console.log("DocumentCard: Rendering", trees.length, "trees");
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {trees.map((tree: any) => (
         <div
           key={tree.parent.id}
-          className="border border-slate-200 rounded-lg p-6 hover:border-sky-300 transition"
+          className="bg-white border border-slate-200 rounded-xl p-6 hover:border-sky-300 hover:shadow-lg transition-all"
         >
-          {/* ✅ Parent folder title now links internally */}
-          <h2 className="font-bold text-lg mb-4">
-            <Link
-              to={`/folder/${tree.parent.id}`}
-              className="text-sky-700 hover:underline"
-            >
+          {/* Parent folder - links to folder page */}
+          <Link
+            to={`/folder/${tree.parent.id}`}
+            className="flex items-center gap-3 mb-4 group"
+          >
+            <div className="p-2 bg-sky-100 rounded-lg group-hover:bg-sky-200 transition-colors">
+              <FolderIcon className="w-6 h-6 text-sky-600" />
+            </div>
+            <h2 className="font-bold text-lg text-slate-900 group-hover:text-sky-600 transition-colors">
               {tree.parent.name}
-            </Link>
-          </h2>
+            </h2>
+          </Link>
 
-          {/* Children list */}
-          <div className="space-y-4">
-            {tree.children.map((child: Folder) => (
-              <div key={child.id} className="border-t pt-3">
-                <h4 className="font-medium text-slate-800">{child.name}</h4>
-                <p className="text-sm text-slate-500">Folder</p>
-
-                {/* Drive link still available if you want */}
-                <a
-                  href={child.webViewLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-sky-700 hover:underline block truncate"
+          {/* Children folders - also link to folder page */}
+          <div className="space-y-2">
+            {tree.children.length > 0 ? (
+              tree.children.map((child: Folder) => (
+                <Link
+                  key={child.id}
+                  to={`/folder/${child.id}`}
+                  className="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-50 transition-colors group"
                 >
-                  {child.webViewLink}
-                </a>
+                  <FolderIcon className="w-4 h-4 text-slate-400 group-hover:text-sky-600 transition-colors" />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm text-slate-700 truncate group-hover:text-sky-600 transition-colors">
+                      {child.name}
+                    </p>
+                  </div>
+                </Link>
+              ))
+            ) : (
+              <p className="text-sm text-slate-500 italic">No subfolders</p>
+            )}
+          </div>
 
-                {/* Preview button */}
-                <a
-                  href={child.webViewLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block text-xs mt-2 text-sky-600 hover:underline"
-                >
-                  Preview
-                </a>
-              </div>
-            ))}
+          {/* Optional: External Drive link */}
+          <div className="mt-4 pt-4 border-t border-slate-100">
+            <a
+              href={tree.parent.webViewLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-slate-500 hover:text-sky-600 transition-colors"
+            >
+              View in Google Drive →
+            </a>
           </div>
         </div>
       ))}
