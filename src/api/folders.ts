@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  // On Vercel, VITE_API_URL can be left unset, and we'll default to /api
-  baseURL: import.meta.env.VITE_API_URL || "/list",
+  baseURL: "https://api.bespoke-apothecaries.com.au", // always production API
+  withCredentials: true, // keeps cookies/session if needed
 });
 
 export interface Folder {
@@ -16,7 +16,7 @@ export const getList = async (): Promise<Folder[]> => {
   console.log("Calling /list endpoint…");
   const res = await api.get<{ folders: Folder[] }>("/list");
   console.log("Response received:", res.data);
-  return res.data.folders; // returns plain array
+  return res.data.folders;
 };
 
 export default api;
