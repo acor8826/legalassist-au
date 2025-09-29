@@ -1,136 +1,223 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-import { Folder as FolderIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Folder as FolderIcon, ChevronDown, ChevronRight, Home } from "lucide-react";
 import { getList, Folder } from "../api/folders";
 import { buildFolderTree } from "../api/helpers/folderTree";
+import api from "../api/folders";
 
-// Global flag to prevent multiple API calls across all component instances
 let isApiCallInProgress = false;
 let cachedFolders: Folder[] | null = null;
 
-export default function DocumentCard() {
+interface DocumentCardProps {
+  folderId?: string | null;
+}
+
+export default function DocumentCard({ folderId }: DocumentCardProps) {
+  const navigate = useNavigate();
   const [folders, setFolders] = useState<Folder[]>([]);
+  const [files, setFiles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
+  const [breadcrumbs, setBreadcrumbs] = useState<Array<{id: string, name: string}>>([]);
 
   const trees = useMemo(() => {
     if (folders.length === 0) return [];
-    const result = buildFolderTree(folders);
-    console.log("Trees built:", result.length, result.map((t: any) => t.parent.name));
-    return result;
+    return buildFolderTree(folders);
   }, [folders]);
 
   useEffect(() => {
-    console.log("DocumentCard: useEffect running, isApiCallInProgress:", isApiCallInProgress);
+    setLoading(true);
 
-    if (cachedFolders) {
-      console.log("DocumentCard: Using cached data");
-      setFolders(cachedFolders);
-      setLoading(false);
-      return;
-    }
+    if (folderId) {
+      api.get(`/contents-of-folder/${folderId}?page=1&per_page=50`)
+        .then((res) => {
+          setFiles(res.data.documents || []);
+          // TODO: Set breadcrumbs from API response
+        })
+        .catch((err) => console.error('Error fetching folder contents:', err))
+        .finally(() => setLoading(false));
+    } else {
+      if (cachedFolders) {
+        setFolders(cachedFolders);
+        setLoading(false);
+        return;
+      }
 
-    if (isApiCallInProgress) {
-      console.log("DocumentCard: API call already in progress, waiting...");
-      const checkInterval = setInterval(() => {
-        if (cachedFolders) {
-          console.log("DocumentCard: API call completed, using cached data");
-          setFolders(cachedFolders);
+      if (isApiCallInProgress) {
+        const checkInterval = setInterval(() => {
+          if (cachedFolders) {
+            setFolders(cachedFolders);
+            setLoading(false);
+            clearInterval(checkInterval);
+          }
+        }, 100);
+        setTimeout(() => clearInterval(checkInterval), 10000);
+        return;
+      }
+
+      isApiCallInProgress = true;
+      getList()
+        .then((data: Folder[]) => {
+          cachedFolders = data;
+          setFolders(data);
+        })
+        .catch((error) => console.error("DocumentCard: API error", error))
+        .finally(() => {
+          isApiCallInProgress = false;
           setLoading(false);
-          clearInterval(checkInterval);
-        }
-      }, 100);
-      setTimeout(() => clearInterval(checkInterval), 10000);
-      return;
+        });
     }
+  }, [folderId]);
 
-    isApiCallInProgress = true;
-    let isMounted = true;
+  const toggleFolder = (id: string) => {
+    setExpandedFolders(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
 
-    getList()
-      .then((data: Folder[]) => {
-        console.log("DocumentCard: API returned", data.length, "folders");
-        cachedFolders = data;
-        if (isMounted) setFolders(data);
-      })
-      .catch((error) => {
-        console.error("DocumentCard: API error", error);
-      })
-      .finally(() => {
-        isApiCallInProgress = false;
-        if (isMounted) setLoading(false);
-      });
+  const isFolder = (mimeType: string) => {
+    return mimeType === 'application/vnd.google-apps.folder';
+  };
 
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const handleItemClick = (file: any) => {
+    if (isFolder(file.mime_type)) {
+      navigate(`/folder/${file.id}`);
+    } else {
+      window.open(file.drive_web_view_link, '_blank');
+    }
+  };
 
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="w-8 h-8 border-4 border-sky-200 border-t-sky-600 rounded-full animate-spin"></div>
-        <p className="ml-3 text-slate-500">Loading folders...</p>
+        <p className="ml-3 text-slate-500">Loading...</p>
       </div>
     );
   }
 
-  console.log("DocumentCard: Rendering", trees.length, "trees");
-
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {trees.map((tree: any) => (
-        <div
-          key={tree.parent.id}
-          className="bg-white border border-slate-200 rounded-xl p-6 hover:border-sky-300 hover:shadow-lg transition-all"
+  // Viewing a specific folder
+  if (folderId && files.length >= 0) {
+    return (
+      <div className="space-y-3">
+        {/* Back button */}
+        <button
+          onClick={() => navigate('/')}
+          className="flex items-center gap-2 text-sm text-sky-600 hover:text-sky-700 font-medium"
         >
-          {/* Parent folder - links to folder page */}
-          <Link
-            to={`/folder/${tree.parent.id}`}
-            className="flex items-center gap-3 mb-4 group"
-          >
-            <div className="p-2 bg-sky-100 rounded-lg group-hover:bg-sky-200 transition-colors">
-              <FolderIcon className="w-6 h-6 text-sky-600" />
-            </div>
-            <h2 className="font-bold text-lg text-slate-900 group-hover:text-sky-600 transition-colors">
-              {tree.parent.name}
-            </h2>
-          </Link>
+          <Home className="w-4 h-4" />
+          All Cases
+        </button>
 
-          {/* Children folders - also link to folder page */}
+        {/* Folder contents */}
+        {files.length === 0 ? (
+          <p className="text-sm text-slate-500 text-center py-8">This folder is empty</p>
+        ) : (
           <div className="space-y-2">
-            {tree.children.length > 0 ? (
-              tree.children.map((child: Folder) => (
-                <Link
-                  key={child.id}
-                  to={`/folder/${child.id}`}
-                  className="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-50 transition-colors group"
+            {files.map((file) => (
+              <div key={file.id} className="border border-slate-200 rounded-lg bg-white overflow-hidden hover:border-sky-300 transition-colors">
+                <button
+                  onClick={() => handleItemClick(file)}
+                  className="w-full flex items-center gap-3 p-3 hover:bg-slate-50 transition-colors text-left"
                 >
-                  <FolderIcon className="w-4 h-4 text-slate-400 group-hover:text-sky-600 transition-colors" />
+                  <div className={`p-2 rounded-lg flex-shrink-0 ${
+                    isFolder(file.mime_type) 
+                      ? 'bg-yellow-50' 
+                      : 'bg-blue-50'
+                  }`}>
+                    <FolderIcon className={`w-5 h-5 ${
+                      isFolder(file.mime_type) 
+                        ? 'text-yellow-600' 
+                        : 'text-blue-600'
+                    }`} />
+                  </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm text-slate-700 truncate group-hover:text-sky-600 transition-colors">
-                      {child.name}
+                    <h3 className="font-medium text-slate-900 truncate">
+                      {file.name}
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      {isFolder(file.mime_type) ? 'Folder' : file.mime_type.split('/')[1]?.toUpperCase()}
                     </p>
                   </div>
-                </Link>
-              ))
-            ) : (
-              <p className="text-sm text-slate-500 italic">No subfolders</p>
+                  {isFolder(file.mime_type) && (
+                    <ChevronRight className="w-5 h-5 text-slate-400 flex-shrink-0" />
+                  )}
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Top-level case folders with accordion
+  return (
+    <div className="space-y-2">
+      {trees.map((tree: any) => {
+        const isExpanded = expandedFolders.has(tree.parent.id);
+        const hasChildren = tree.children.length > 0;
+
+        return (
+          <div key={tree.parent.id} className="border border-slate-200 rounded-lg bg-white overflow-hidden">
+            <div className="flex items-center">
+              <button
+                onClick={() => navigate(`/folder/${tree.parent.id}`)}
+                className="flex-1 flex items-center gap-3 p-3 hover:bg-slate-50 transition-colors text-left"
+              >
+                <div className="p-2 bg-yellow-50 rounded-lg">
+                  <FolderIcon className="w-5 h-5 text-yellow-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-slate-900 truncate">
+                    {tree.parent.name}
+                  </h3>
+                  {hasChildren && (
+                    <p className="text-xs text-slate-500">{tree.children.length} item{tree.children.length !== 1 ? 's' : ''}</p>
+                  )}
+                </div>
+              </button>
+              
+              {hasChildren && (
+                <button
+                  onClick={() => toggleFolder(tree.parent.id)}
+                  className="p-3 hover:bg-slate-100 transition-colors"
+                >
+                  {isExpanded ? (
+                    <ChevronDown className="w-5 h-5 text-slate-600" />
+                  ) : (
+                    <ChevronRight className="w-5 h-5 text-slate-600" />
+                  )}
+                </button>
+              )}
+            </div>
+
+            {hasChildren && isExpanded && (
+              <div className="border-t border-slate-200 bg-slate-50">
+                {tree.children.map((child: Folder) => (
+                  <button
+                    key={child.id}
+                    onClick={() => navigate(`/folder/${child.id}`)}
+                    className="w-full flex items-center gap-3 p-3 pl-12 hover:bg-white transition-colors border-b border-slate-100 last:border-b-0 text-left"
+                  >
+                    <FolderIcon className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                    <span className="text-sm text-slate-700 truncate flex-1">
+                      {child.name}
+                    </span>
+                    <ChevronRight className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                  </button>
+                ))}
+              </div>
             )}
           </div>
-
-          {/* Optional: External Drive link */}
-          <div className="mt-4 pt-4 border-t border-slate-100">
-            <a
-              href={tree.parent.webViewLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs text-slate-500 hover:text-sky-600 transition-colors"
-            >
-              View in Google Drive →
-            </a>
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
