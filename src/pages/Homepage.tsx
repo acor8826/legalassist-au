@@ -27,20 +27,55 @@ export default function Homepage() {
       {/* Navigation */}
       <nav className="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-between items-center h-16 min-h-[56px]">
             <div className="flex items-center space-x-2">
-              <Scale className="h-8 w-8 text-blue-600" />
-              <span className="text-xl font-bold text-slate-900">LegalAssist AU</span>
+              <Scale className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
+              <span className="text-base sm:text-xl font-bold text-slate-900">
+                <span className="hidden sm:inline">LegalAssist AU</span>
+                <span className="sm:hidden">Legal AU</span>
+              </span>
             </div>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-slate-600 hover:text-blue-600 transition-colors">Features</a>
-              <a href="#how-it-works" className="text-slate-600 hover:text-blue-600 transition-colors">How It Works</a>
-              <a href="#pricing" className="text-slate-600 hover:text-blue-600 transition-colors">Pricing</a>
+              <a
+                href="#features"
+                className="
+                  text-slate-600 hover:text-blue-600 transition-colors
+                  px-3 py-2 rounded-lg hover:bg-slate-50
+                  min-h-[44px] flex items-center
+                "
+              >
+                Features
+              </a>
+              <a
+                href="#how-it-works"
+                className="
+                  text-slate-600 hover:text-blue-600 transition-colors
+                  px-3 py-2 rounded-lg hover:bg-slate-50
+                  min-h-[44px] flex items-center
+                "
+              >
+                How It Works
+              </a>
+              <a
+                href="#pricing"
+                className="
+                  text-slate-600 hover:text-blue-600 transition-colors
+                  px-3 py-2 rounded-lg hover:bg-slate-50
+                  min-h-[44px] flex items-center
+                "
+              >
+                Pricing
+              </a>
               <button
                 onClick={handleGetStarted}
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                className="
+                  bg-blue-600 text-white px-6 py-2 rounded-lg
+                  hover:bg-blue-700 active:bg-blue-800
+                  transition-colors
+                  min-h-[44px]
+                "
               >
                 Get Started
               </button>
@@ -50,7 +85,14 @@ export default function Homepage() {
             <div className="md:hidden">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="text-slate-600 hover:text-slate-900"
+                className="
+                  text-slate-600 hover:text-slate-900 active:text-slate-700
+                  p-2 rounded-lg hover:bg-slate-100 active:bg-slate-200
+                  transition-colors
+                  min-w-[44px] min-h-[44px]
+                  flex items-center justify-center
+                "
+                aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
               >
                 {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </button>
@@ -60,13 +102,55 @@ export default function Homepage() {
           {/* Mobile Navigation */}
           {isMenuOpen && (
             <div className="md:hidden py-4 border-t border-slate-200">
-              <div className="flex flex-col space-y-4">
-                <a href="#features" className="text-slate-600 hover:text-blue-600 transition-colors">Features</a>
-                <a href="#how-it-works" className="text-slate-600 hover:text-blue-600 transition-colors">How It Works</a>
-                <a href="#pricing" className="text-slate-600 hover:text-blue-600 transition-colors">Pricing</a>
+              <div className="flex flex-col space-y-2">
+                <a
+                  href="#features"
+                  className="
+                    text-slate-600 hover:text-blue-600 active:text-blue-700
+                    transition-colors px-4 py-3 rounded-lg
+                    hover:bg-slate-50 active:bg-slate-100
+                    min-h-[44px] flex items-center
+                  "
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Features
+                </a>
+                <a
+                  href="#how-it-works"
+                  className="
+                    text-slate-600 hover:text-blue-600 active:text-blue-700
+                    transition-colors px-4 py-3 rounded-lg
+                    hover:bg-slate-50 active:bg-slate-100
+                    min-h-[44px] flex items-center
+                  "
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  How It Works
+                </a>
+                <a
+                  href="#pricing"
+                  className="
+                    text-slate-600 hover:text-blue-600 active:text-blue-700
+                    transition-colors px-4 py-3 rounded-lg
+                    hover:bg-slate-50 active:bg-slate-100
+                    min-h-[44px] flex items-center
+                  "
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Pricing
+                </a>
                 <button
-                  onClick={handleGetStarted}
-                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors w-fit"
+                  onClick={() => {
+                    handleGetStarted();
+                    setIsMenuOpen(false);
+                  }}
+                  className="
+                    bg-blue-600 text-white px-6 py-3 rounded-lg
+                    hover:bg-blue-700 active:bg-blue-800
+                    transition-colors
+                    min-h-[44px] flex items-center justify-center
+                    mt-2
+                  "
                 >
                   Get Started
                 </button>
@@ -77,46 +161,61 @@ export default function Homepage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 px-4 sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center">
+            <div className="space-y-6 sm:space-y-8">
               <div className="space-y-4">
-                <h1 className="text-5xl lg:text-6xl font-bold text-slate-900 leading-tight">
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-slate-900 leading-tight">
                   Navigate Legal Challenges with
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600"> AI-Powered</span> Confidence
                 </h1>
-                <p className="text-xl text-slate-600 leading-relaxed">
+                <p className="text-base sm:text-lg lg:text-xl text-slate-600 leading-relaxed">
                   Empowering unrepresented litigants across Australia with intelligent document management,
                   AI-assisted legal writing, and comprehensive case organization tools.
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <button
                   onClick={handleGetStarted}
-                  className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                  className="
+                    bg-gradient-to-r from-blue-600 to-blue-700 text-white
+                    px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold
+                    hover:from-blue-700 hover:to-blue-800 active:from-blue-800 active:to-blue-900
+                    transition-all duration-300 shadow-lg hover:shadow-xl
+                    transform hover:-translate-y-1 active:translate-y-0
+                    min-h-[44px] flex items-center justify-center
+                  "
                 >
-                  Start Your Case Today
+                  <span>Start Your Case Today</span>
                   <ArrowRight className="inline ml-2 h-5 w-5" />
                 </button>
-                <button className="border-2 border-slate-300 text-slate-700 px-8 py-4 rounded-xl font-semibold hover:border-slate-400 hover:bg-slate-50 transition-all duration-300">
+                <button
+                  className="
+                    border-2 border-slate-300 text-slate-700
+                    px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold
+                    hover:border-slate-400 hover:bg-slate-50 active:bg-slate-100
+                    transition-all duration-300
+                    min-h-[44px] flex items-center justify-center
+                  "
+                >
                   Watch Demo
                 </button>
               </div>
 
-              <div className="flex items-center space-x-8 pt-4">
+              <div className="flex items-center justify-between sm:justify-start sm:space-x-8 pt-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-slate-900">10,000+</div>
-                  <div className="text-sm text-slate-600">Cases Managed</div>
+                  <div className="text-xl sm:text-2xl font-bold text-slate-900">10,000+</div>
+                  <div className="text-xs sm:text-sm text-slate-600">Cases Managed</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-slate-900">95%</div>
-                  <div className="text-sm text-slate-600">Success Rate</div>
+                  <div className="text-xl sm:text-2xl font-bold text-slate-900">95%</div>
+                  <div className="text-xs sm:text-sm text-slate-600">Success Rate</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-slate-900">24/7</div>
-                  <div className="text-sm text-slate-600">AI Support</div>
+                  <div className="text-xl sm:text-2xl font-bold text-slate-900">24/7</div>
+                  <div className="text-xs sm:text-sm text-slate-600">AI Support</div>
                 </div>
               </div>
             </div>
@@ -203,12 +302,20 @@ export default function Homepage() {
                 color: "from-yellow-500 to-orange-500"
               }
             ].map((feature, index) => (
-              <div key={index} className="group p-8 rounded-2xl border border-slate-200 hover:border-transparent hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
-                <div className={`inline-flex p-3 rounded-xl bg-gradient-to-r ${feature.color} text-white mb-4 group-hover:scale-110 transition-transform duration-300`}>
+              <div
+                key={index}
+                className="
+                  group p-6 sm:p-8 rounded-2xl border border-slate-200
+                  hover:border-transparent hover:shadow-2xl active:shadow-lg
+                  transition-all duration-300 hover:-translate-y-2 active:-translate-y-1
+                  min-h-[200px] flex flex-col
+                "
+              >
+                <div className={`inline-flex p-3 rounded-xl bg-gradient-to-r ${feature.color} text-white mb-4 group-hover:scale-110 transition-transform duration-300 w-fit`}>
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-semibold text-slate-900 mb-3">{feature.title}</h3>
-                <p className="text-slate-600 leading-relaxed">{feature.description}</p>
+                <h3 className="text-lg sm:text-xl font-semibold text-slate-900 mb-3">{feature.title}</h3>
+                <p className="text-sm sm:text-base text-slate-600 leading-relaxed">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -261,35 +368,51 @@ export default function Homepage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-700 text-white">
+      <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-r from-blue-600 to-purple-700 text-white">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <div className="space-y-8">
-            <h2 className="text-4xl font-bold">Ready to Take Control of Your Legal Case?</h2>
-            <p className="text-xl opacity-90 leading-relaxed">
+          <div className="space-y-6 sm:space-y-8">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold">Ready to Take Control of Your Legal Case?</h2>
+            <p className="text-base sm:text-lg lg:text-xl opacity-90 leading-relaxed">
               Join thousands of Australians who have successfully managed their legal matters
               with our AI-powered platform. Start your free trial today.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <button className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold hover:bg-gray-100 transition-colors shadow-lg">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+              <button
+                className="
+                  bg-white text-blue-600 px-6 sm:px-8 py-3 sm:py-4 rounded-xl
+                  font-semibold hover:bg-gray-100 active:bg-gray-200
+                  transition-colors shadow-lg
+                  min-h-[44px] flex items-center justify-center
+                  w-full sm:w-auto
+                "
+              >
                 Start Free Trial
               </button>
-              <button className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300">
+              <button
+                className="
+                  border-2 border-white text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl
+                  font-semibold hover:bg-white hover:text-blue-600 active:bg-gray-100 active:text-blue-600
+                  transition-all duration-300
+                  min-h-[44px] flex items-center justify-center
+                  w-full sm:w-auto
+                "
+              >
                 Schedule Demo
               </button>
             </div>
 
-            <div className="flex justify-center items-center space-x-6 pt-8 text-sm opacity-75">
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 pt-6 sm:pt-8 text-xs sm:text-sm opacity-75">
               <div className="flex items-center space-x-2">
-                <CheckCircle className="h-5 w-5" />
+                <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5" />
                 <span>No credit card required</span>
               </div>
               <div className="flex items-center space-x-2">
-                <CheckCircle className="h-5 w-5" />
+                <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5" />
                 <span>14-day free trial</span>
               </div>
               <div className="flex items-center space-x-2">
-                <CheckCircle className="h-5 w-5" />
+                <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5" />
                 <span>Cancel anytime</span>
               </div>
             </div>

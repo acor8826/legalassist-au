@@ -16,7 +16,8 @@
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",
     "react-draggable": "^4.5.0",
-    "react-router-dom": "^7.9.3"
+    "react-router-dom": "^7.9.3",
+    "react-swipeable": "^7.0.2"
   },
   "devDependencies": {
     "@types/react": "^18.2.21",
