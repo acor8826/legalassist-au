@@ -5,14 +5,11 @@ import {
   ChevronDown,
   ChevronRight,
   Home,
-  X,
-  ExternalLink,
 } from "lucide-react";
 import { getList, Folder } from "../api/folders";
 import { buildFolderTree } from "../api/helpers/folderTree";
 import api from "../api/folders";
-import { Resizable } from "re-resizable";
-import Draggable from "react-draggable";
+import DocumentViewerModal from "./DocumentViewerModal";
 
 let isApiCallInProgress = false;
 let cachedFolders: Folder[] | null = null;
@@ -26,7 +23,9 @@ export default function DocumentCard({ folderId }: DocumentCardProps) {
   const [folders, setFolders] = useState<Folder[]>([]);
   const [files, setFiles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
+  const [expandedFolders, setExpandedFolders] = useState<Set<string>>(
+    new Set()
+  );
   const [previewFile, setPreviewFile] = useState<any | null>(null);
 
   const trees = useMemo(() => {
@@ -98,14 +97,15 @@ export default function DocumentCard({ folderId }: DocumentCardProps) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="w-8 h-8 border-4 border-sky-200 border-t-sky-600 rounded-full animate-spin"></div>
-        <p className="ml-3 text-slate-500">Loading...</p>
+        <p className="ml-3 text-slate-500">Loading…</p>
       </div>
     );
   }
 
-  if (folderId) {
-    return (
-      <>
+  return (
+    <>
+      {/* Folder or file list */}
+      {folderId ? (
         <div className="space-y-3">
           <button
             onClick={() => navigate("/")}
@@ -152,145 +152,66 @@ export default function DocumentCard({ folderId }: DocumentCardProps) {
                           : file.mime_type.split("/")[1]?.toUpperCase()}
                       </p>
                     </div>
-                    {isFolder(file.mime_type) && (
-                      <ChevronRight className="w-5 h-5 text-slate-400 flex-shrink-0" />
-                    )}
                   </button>
                 </div>
               ))}
             </div>
           )}
         </div>
-
-        {/* 📑 Resizable + Draggable Modal */}
-        {previewFile && (
-          <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-            <Draggable handle=".drag-handle" cancel=".no-drag">
-              <Resizable
-                defaultSize={{ width: 900, height: 600 }}
-                minWidth={400}
-                minHeight={300}
-                maxWidth="90vw"
-                maxHeight="90vh"
-                className="bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden"
+      ) : (
+        <div className="space-y-2">
+          {trees.map((tree: any) => {
+            const isExpanded = expandedFolders.has(tree.parent.id);
+            const hasChildren = tree.children.length > 0;
+            return (
+              <div
+                key={tree.parent.id}
+                className="border border-slate-200 rounded-lg bg-white overflow-hidden"
               >
-                {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b border-slate-200 drag-handle cursor-move">
-                  <div className="flex-1 min-w-0">
-                    <h2 className="text-lg font-semibold text-slate-900 truncate">
-                      {previewFile.name}
-                    </h2>
-                    <p className="text-sm text-slate-500">
-                      {previewFile.mime_type}
-                    </p>
-                  </div>
+                <div className="flex items-center">
                   <button
-                    onClick={() => setPreviewFile(null)}
-                    className="p-2 hover:bg-slate-100 rounded-lg transition-colors ml-4 no-drag"
+                    onClick={() => navigate(`/folder/${tree.parent.id}`)}
+                    className="flex-1 flex items-center gap-3 p-3 hover:bg-slate-50 transition-colors text-left"
                   >
-                    <X className="w-5 h-5 text-slate-600" />
+                    <div className="p-2 bg-yellow-50 rounded-lg">
+                      <FolderIcon className="w-5 h-5 text-yellow-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-slate-900 truncate">
+                        {tree.parent.name}
+                      </h3>
+                      {hasChildren && (
+                        <p className="text-xs text-slate-500">
+                          {tree.children.length} item
+                          {tree.children.length !== 1 ? "s" : ""}
+                        </p>
+                      )}
+                    </div>
                   </button>
-                </div>
-
-                {/* Content */}
-                <div className="flex-1 overflow-hidden bg-slate-50">
-                  <iframe
-                    src={previewFile.drive_web_view_link}
-                    className="w-full h-full"
-                    title={previewFile.name}
-                  />
-                </div>
-
-                {/* Footer */}
-                <div className="p-4 border-t border-slate-200 flex gap-3 no-drag">
-                  <a
-                    href={previewFile.drive_web_view_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-lg font-medium transition-colors"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                    Open in Google Drive
-                  </a>
-                  <button
-                    onClick={() => setPreviewFile(null)}
-                    className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-medium transition-colors"
-                  >
-                    Close
-                  </button>
-                </div>
-              </Resizable>
-            </Draggable>
-          </div>
-        )}
-      </>
-    );
-  }
-
-  // Root-level folder listing
-  return (
-    <div className="space-y-2">
-      {trees.map((tree: any) => {
-        const isExpanded = expandedFolders.has(tree.parent.id);
-        const hasChildren = tree.children.length > 0;
-        return (
-          <div
-            key={tree.parent.id}
-            className="border border-slate-200 rounded-lg bg-white overflow-hidden"
-          >
-            <div className="flex items-center">
-              <button
-                onClick={() => navigate(`/folder/${tree.parent.id}`)}
-                className="flex-1 flex items-center gap-3 p-3 hover:bg-slate-50 transition-colors text-left"
-              >
-                <div className="p-2 bg-yellow-50 rounded-lg">
-                  <FolderIcon className="w-5 h-5 text-yellow-600" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-slate-900 truncate">
-                    {tree.parent.name}
-                  </h3>
                   {hasChildren && (
-                    <p className="text-xs text-slate-500">
-                      {tree.children.length} item
-                      {tree.children.length !== 1 ? "s" : ""}
-                    </p>
+                    <button
+                      onClick={() => toggleFolder(tree.parent.id)}
+                      className="p-3 hover:bg-slate-100 transition-colors"
+                    >
+                      {isExpanded ? (
+                        <ChevronDown className="w-5 h-5 text-slate-600" />
+                      ) : (
+                        <ChevronRight className="w-5 h-5 text-slate-600" />
+                      )}
+                    </button>
                   )}
                 </div>
-              </button>
-              {hasChildren && (
-                <button
-                  onClick={() => toggleFolder(tree.parent.id)}
-                  className="p-3 hover:bg-slate-100 transition-colors"
-                >
-                  {isExpanded ? (
-                    <ChevronDown className="w-5 h-5 text-slate-600" />
-                  ) : (
-                    <ChevronRight className="w-5 h-5 text-slate-600" />
-                  )}
-                </button>
-              )}
-            </div>
-            {hasChildren && isExpanded && (
-              <div className="border-t border-slate-200 bg-slate-50">
-                {tree.children.map((child: Folder) => (
-                  <button
-                    key={child.id}
-                    onClick={() => navigate(`/folder/${child.id}`)}
-                    className="w-full flex items-center gap-3 p-3 pl-12 hover:bg-white transition-colors border-b border-slate-100 last:border-b-0 text-left"
-                  >
-                    <FolderIcon className="w-4 h-4 text-slate-400 flex-shrink-0" />
-                    <span className="text-sm text-slate-700 truncate flex-1">
-                      {child.name}
-                    </span>
-                    <ChevronRight className="w-4 h-4 text-slate-400 flex-shrink-0" />
-                  </button>
-                ))}
               </div>
-            )}
-          </div>
-        );
-      })}
-    </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Modal */}
+      <DocumentViewerModal
+        file={previewFile}
+        onClose={() => setPreviewFile(null)}
+      />
+    </>
   );
 }

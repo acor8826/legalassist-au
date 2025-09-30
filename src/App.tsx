@@ -1,6 +1,10 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
-import { Menu, PanelRightOpen } from "lucide-react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import Header from "./components/Header";
 import LeftSidebar from "./components/LeftSidebar";
 import RightSidebar from "./components/RightSidebar";
@@ -15,37 +19,34 @@ import SearchOverlay from "./components/mobile/SearchOverlay";
 
 function AppContent() {
   const location = useLocation();
-  const [showModal, setShowModal] = useState(false);
-  const [folderName, setFolderName] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [expandedNavSections, setExpandedNavSections] = useState<Set<string>>(new Set(['main']));
+  const [folderName, setFolderName] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [expandedNavSections, setExpandedNavSections] = useState<Set<string>>(
+    new Set(["main"])
+  );
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
   const [isSearchOverlayOpen, setIsSearchOverlayOpen] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
 
-  const folderId = location.pathname.startsWith('/folder/')
-    ? location.pathname.split('/folder/')[1]
+  const folderId = location.pathname.startsWith("/folder/")
+    ? location.pathname.split("/folder/")[1]
     : null;
 
-  const handleCreateFolder = async () => {
+  const handleCreateFolder = () => {
     if (!folderName.trim()) return;
-    try {
-      console.log('Creating folder:', folderName);
-      setFolderName('');
-      setShowModal(false);
-    } catch (error) {
-      console.error('Failed to create folder:', error);
-    }
+    console.log("Creating folder:", folderName);
+    setFolderName("");
+    setShowCreateModal(false);
   };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Searching for:', searchQuery);
+    console.log("Searching for:", searchQuery);
   };
 
   const toggleNavSection = (section: string) => {
-    setExpandedNavSections(prev => {
+    setExpandedNavSections((prev) => {
       const next = new Set(prev);
       if (next.has(section)) {
         next.delete(section);
@@ -56,105 +57,73 @@ function AppContent() {
     });
   };
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(prev => !prev);
-  };
-
-  const closeSidebar = () => {
-    setIsSidebarOpen(false);
-  };
-
-  const toggleRightSidebar = () => {
-    setIsRightSidebarOpen(prev => !prev);
-  };
-
-  const closeRightSidebar = () => {
-    setIsRightSidebarOpen(false);
-  };
-
-  const handleFABClick = () => {
-    setShowCreateModal(true);
-  };
-
-  const handleCreateAction = () => {
-    console.log('Creating new item...');
-    setShowCreateModal(false);
-  };
-
   return (
-    <Routes>
-      {/* Homepage route - standalone without layout */}
-      <Route path="/homepage" element={<Homepage />} />
+    <div className="h-screen flex flex-col bg-slate-50 text-slate-800">
+      {/* Mobile Top Bar */}
+      <TopBar onSearchClick={() => setIsSearchOverlayOpen(true)} />
 
-      {/* Main app routes with layout */}
-      <Route path="/*" element={
-        <div className="h-screen flex flex-col bg-slate-50 text-slate-800">
-          {/* Mobile Top Bar */}
-          <TopBar onSearchClick={() => setIsSearchOverlayOpen(true)} />
+      {/* Desktop Header */}
+      <div className="hidden md:block">
+        <Header
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          onSearchSubmit={handleSearch}
+        />
+      </div>
 
-          {/* Desktop Header - Hidden on mobile */}
-          <div className="hidden md:block">
-            <Header
-              searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
-              onSearchSubmit={handleSearch}
-            />
-          </div>
+      <div className="flex flex-1 overflow-hidden">
+        {/* Left Sidebar */}
+        <LeftSidebar
+          expandedSections={expandedNavSections}
+          onToggleSection={toggleNavSection}
+          isOpen={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
+        />
 
-          <main className="flex flex-1 overflow-hidden min-h-0 relative mt-0 md:mt-0 pt-14 md:pt-0 pb-14 md:pb-0">
-            {/* Desktop sidebars - Always visible on desktop */}
-            <div className="hidden md:block">
-              <LeftSidebar
-                expandedSections={expandedNavSections}
-                onToggleSection={toggleNavSection}
-                isOpen={true}
-                onClose={() => {}}
-              />
-            </div>
+        {/* Main Content */}
+        <main className="flex-1 overflow-y-auto">
+          <Routes>
+            <Route path="/homepage" element={<Homepage />} />
+            <Route path="/*" element={<AIChat />} />
+          </Routes>
+        </main>
 
-            <div className="flex-1 flex flex-col min-w-0">
-              <AIChat />
-            </div>
+        {/* Right Sidebar */}
+        <RightSidebar
+          folderId={folderId}
+          onCreateFolder={handleCreateFolder}
+          isOpen={isRightSidebarOpen}
+          onClose={() => setIsRightSidebarOpen(false)}
+        />
+      </div>
 
-            <div className="hidden md:block">
-              <RightSidebar
-                folderId={folderId}
-                onCreateFolder={() => setShowModal(true)}
-                isOpen={true}
-                onClose={() => {}}
-              />
-            </div>
-          </main>
+      {/* Footer */}
+      <Footer />
 
-          {/* Desktop Footer - Hidden on mobile */}
-          <div className="hidden md:block">
-            <Footer />
-          </div>
+      {/* Floating Action Button */}
+      <FloatingActionButton onClick={() => setShowCreateModal(true)} />
 
-          {/* Mobile Navigation Components */}
-          <BottomNavigation />
-          <FloatingActionButton
-            onClick={handleFABClick}
-            ariaLabel="Create new chat or document"
-          />
-          <SearchOverlay
-            isOpen={isSearchOverlayOpen}
-            onClose={() => setIsSearchOverlayOpen(false)}
-          />
+      {/* Bottom Navigation (mobile only) */}
+      <BottomNavigation
+        onToggleSidebar={() => setIsSidebarOpen((p) => !p)}
+        onToggleRightSidebar={() => setIsRightSidebarOpen((p) => !p)}
+      />
 
-          <CreateFolderModal
-            isOpen={showModal}
-            folderName={folderName}
-            onFolderNameChange={setFolderName}
-            onClose={() => {
-              setShowModal(false);
-              setFolderName('');
-            }}
-            onCreate={handleCreateFolder}
-          />
-        </div>
-      } />
-    </Routes>
+      {/* Create Folder Modal */}
+      <CreateFolderModal
+        isOpen={showCreateModal}
+        folderName={folderName}
+        onFolderNameChange={setFolderName}
+        onClose={() => setShowCreateModal(false)}
+        onCreate={handleCreateFolder}
+      />
+
+      {/* Search Overlay */}
+      <SearchOverlay
+        isOpen={isSearchOverlayOpen}
+        onClose={() => setIsSearchOverlayOpen(false)}
+      />
+    </div>
   );
 }
 
