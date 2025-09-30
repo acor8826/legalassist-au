@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import LeftSidebar from "./components/LeftSidebar";
 import RightSidebar from "./components/RightSidebar";
 import Footer from "./components/Footer";
 import CreateFolderModal from "./components/CreateFolderModal";
 import AIChat from "./components/AIChat";
+import Homepage from "./pages/Homepage";
 
 function AppContent() {
   const location = useLocation();
@@ -47,42 +48,50 @@ function AppContent() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-slate-50 text-slate-800">
-      <Header 
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        onSearchSubmit={handleSearch}
-      />
+    <Routes>
+      {/* Homepage route - standalone without layout */}
+      <Route path="/homepage" element={<Homepage />} />
       
-      <main className="flex flex-1 overflow-hidden min-h-0">
-        <LeftSidebar 
-          expandedSections={expandedNavSections}
-          onToggleSection={toggleNavSection}
-        />
+      {/* Main app routes with layout */}
+      <Route path="/*" element={
+        <div className="h-screen flex flex-col bg-slate-50 text-slate-800">
+          <Header 
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            onSearchSubmit={handleSearch}
+          />
+          
+          <main className="flex flex-1 overflow-hidden min-h-0">
+            <LeftSidebar 
+              expandedSections={expandedNavSections}
+              onToggleSection={toggleNavSection}
+            />
 
-        <div className="flex-1 flex flex-col min-w-0">
-          <AIChat />
+            <div className="flex-1 flex flex-col min-w-0">
+              <AIChat />
+            </div>
+
+            <RightSidebar 
+              folderId={folderId}
+              onCreateFolder={() => setShowModal(true)}
+            />
+          </main>
+
+          <Footer />
+
+          <CreateFolderModal
+            isOpen={showModal}
+            folderName={folderName}
+            onFolderNameChange={setFolderName}
+            onClose={() => {
+              setShowModal(false);
+              setFolderName('');
+            }}
+            onCreate={handleCreateFolder}
+          />
         </div>
-
-        <RightSidebar 
-          folderId={folderId}
-          onCreateFolder={() => setShowModal(true)}
-        />
-      </main>
-
-      <Footer />
-
-      <CreateFolderModal
-        isOpen={showModal}
-        folderName={folderName}
-        onFolderNameChange={setFolderName}
-        onClose={() => {
-          setShowModal(false);
-          setFolderName('');
-        }}
-        onCreate={handleCreateFolder}
-      />
-    </div>
+      } />
+    </Routes>
   );
 }
 
