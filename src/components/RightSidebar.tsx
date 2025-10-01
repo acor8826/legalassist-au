@@ -15,6 +15,16 @@ export default function RightSidebar({ folderId, onCreateFolder, isOpen, onClose
   const firstFocusableRef = useRef<HTMLButtonElement>(null);
   const [isAccordionOpen, setIsAccordionOpen] = useState(true);
 
+  useEffect(() => {
+    console.log('[RightSidebar] Component mounted');
+    console.log('[RightSidebar] Window width:', window.innerWidth);
+    console.log('[RightSidebar] isOpen:', isOpen);
+  }, []);
+
+  useEffect(() => {
+    console.log('[RightSidebar] isOpen changed:', isOpen);
+  }, [isOpen]);
+
   // Swipe gesture handlers for mobile
   const swipeHandlers = useSwipeable({
     onSwipedRight: () => {

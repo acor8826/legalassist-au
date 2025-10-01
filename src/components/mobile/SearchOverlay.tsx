@@ -24,15 +24,22 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    console.log('[SearchOverlay] isOpen changed:', isOpen);
+    console.log('[SearchOverlay] Window width:', window.innerWidth);
+
     if (isOpen) {
       // Prevent body scroll when overlay is open
       document.body.style.overflow = 'hidden';
+      console.log('[SearchOverlay] Body scroll disabled');
+
       // Focus input when overlay opens
       setTimeout(() => {
         inputRef.current?.focus();
+        console.log('[SearchOverlay] Input focused');
       }, 100);
     } else {
       document.body.style.overflow = 'unset';
+      console.log('[SearchOverlay] Body scroll enabled');
       // Clear search when closing
       setSearchQuery('');
     }
@@ -45,7 +52,7 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      console.log('Searching for:', searchQuery);
+      console.log('[SearchOverlay] Searching for:', searchQuery);
       // Here you would implement actual search logic
       onClose();
     }
@@ -53,7 +60,7 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
 
   const handleSuggestionClick = (query: string) => {
     setSearchQuery(query);
-    console.log('Selected suggestion:', query);
+    console.log('[SearchOverlay] Selected suggestion:', query);
     // Here you would implement actual search logic
     onClose();
   };

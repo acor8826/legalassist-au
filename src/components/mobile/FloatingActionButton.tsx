@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Plus } from 'lucide-react';
 
 interface FloatingActionButtonProps {
@@ -10,10 +10,18 @@ export default function FloatingActionButton({
   onClick,
   ariaLabel = 'Create new'
 }: FloatingActionButtonProps) {
+  useEffect(() => {
+    console.log('[FloatingActionButton] Component mounted');
+    console.log('[FloatingActionButton] Window width:', window.innerWidth);
+    console.log('[FloatingActionButton] Should be visible:', window.innerWidth < 768);
+  }, []);
+
   const handleClick = () => {
+    console.log('[FloatingActionButton] Button clicked');
     // Trigger haptic feedback if available
     if ('vibrate' in navigator) {
       navigator.vibrate(15);
+      console.log('[FloatingActionButton] Haptic feedback triggered');
     }
     onClick();
   };

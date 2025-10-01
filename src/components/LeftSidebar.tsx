@@ -15,10 +15,24 @@ export default function LeftSidebar({ expandedSections, onToggleSection, isOpen,
   const sidebarRef = useRef<HTMLDivElement>(null);
   const firstFocusableRef = useRef<HTMLButtonElement>(null);
 
+  useEffect(() => {
+    console.log('[LeftSidebar] Component mounted');
+    console.log('[LeftSidebar] Window width:', window.innerWidth);
+    console.log('[LeftSidebar] isOpen:', isOpen);
+    console.log('[LeftSidebar] Should show as drawer:', window.innerWidth < 768);
+  }, []);
+
+  // Log isOpen changes
+  useEffect(() => {
+    console.log('[LeftSidebar] isOpen changed:', isOpen);
+  }, [isOpen]);
+
   // Swipe gesture handlers for mobile
   const swipeHandlers = useSwipeable({
     onSwipedLeft: () => {
+      console.log('[LeftSidebar] Swipe left detected');
       if (window.innerWidth < 768) {
+        console.log('[LeftSidebar] Closing sidebar');
         onClose();
       }
     },

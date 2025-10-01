@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Home, FolderOpen, MessageSquare, BarChart3, Settings } from 'lucide-react';
 
@@ -42,11 +42,28 @@ const tabs: NavTab[] = [
   },
 ];
 
-export default function BottomNavigation() {
+interface BottomNavigationProps {
+  onToggleSidebar?: () => void;
+  onToggleRightSidebar?: () => void;
+}
+
+export default function BottomNavigation({ onToggleSidebar, onToggleRightSidebar }: BottomNavigationProps = {}) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleTabClick = (path: string) => {
+  useEffect(() => {
+    console.log('[BottomNavigation] Component mounted');
+    console.log('[BottomNavigation] Window width:', window.innerWidth);
+    console.log('[BottomNavigation] Should be visible:', window.innerWidth < 768);
+  }, []);
+
+  useEffect(() => {
+    console.log('[BottomNavigation] Location changed:', location.pathname);
+  }, [location.pathname]);
+
+  const handleTabClick = (path: string, tabLabel: string) => {
+    console.log(`[BottomNavigation] Tab clicked: ${tabLabel} (${path})`);
+
     // Trigger haptic feedback if available
     if ('vibrate' in navigator) {
       navigator.vibrate(10);
@@ -55,14 +72,18 @@ export default function BottomNavigation() {
   };
 
   const isActive = (path: string) => {
+    let active = false;
     if (path === '/') {
-      return location.pathname === '/';
+      active = location.pathname === '/' || location.pathname === '/homepage';
+    } else {
+      active = location.pathname.startsWith(path);
     }
-    return location.pathname.startsWith(path);
+    console.log(`[BottomNavigation] isActive(${path}): ${active} (current: ${location.pathname})`);
+    return active;
   };
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 safe-area-bottom">
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 safe-area-bottom">
       <div className="flex items-center justify-around h-14">
         {tabs.map((tab) => {
           const Icon = tab.icon;
@@ -71,7 +92,7 @@ export default function BottomNavigation() {
           return (
             <button
               key={tab.id}
-              onClick={() => handleTabClick(tab.path)}
+              onClick={() => handleTabClick(tab.path, tab.label)}
               className={`
                 flex flex-col items-center justify-center
                 min-w-[64px] min-h-[44px]

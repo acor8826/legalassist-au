@@ -8,6 +8,8 @@ interface HeaderProps {
 }
 
 export default function Header({ searchQuery, onSearchChange, onSearchSubmit }: HeaderProps) {
+  console.log('[Header] Rendered - Window width:', window.innerWidth);
+
   return (
     <div className="bg-white shadow-sm border-b border-slate-200 flex-shrink-0">
       <div className="px-6 py-3 flex items-center justify-between">

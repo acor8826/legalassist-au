@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, User } from 'lucide-react';
 
@@ -9,12 +9,24 @@ interface TopBarProps {
 export default function TopBar({ onSearchClick }: TopBarProps) {
   const navigate = useNavigate();
 
+  useEffect(() => {
+    console.log('[TopBar] Component mounted');
+    console.log('[TopBar] Window width:', window.innerWidth);
+    console.log('[TopBar] Should be visible:', window.innerWidth < 768);
+  }, []);
+
   const handleLogoClick = () => {
+    console.log('[TopBar] Logo clicked - navigating to /');
     navigate('/');
   };
 
+  const handleSearchClick = () => {
+    console.log('[TopBar] Search button clicked');
+    onSearchClick();
+  };
+
   return (
-    <header className="md:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-slate-200 shadow-sm">
+    <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-slate-200 shadow-sm safe-area-top">
       <div className="flex items-center justify-between h-14 px-4">
         {/* Logo - Acts as home button */}
         <button
@@ -35,7 +47,7 @@ export default function TopBar({ onSearchClick }: TopBarProps) {
         <div className="flex items-center gap-2">
           {/* Search button */}
           <button
-            onClick={onSearchClick}
+            onClick={handleSearchClick}
             className="
               p-2.5 rounded-full hover:bg-slate-100 active:bg-slate-200
               transition-colors

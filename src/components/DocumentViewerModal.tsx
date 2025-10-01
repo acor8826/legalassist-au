@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Rnd } from "react-rnd";
 import { X, ExternalLink, Maximize2, Minimize2 } from "lucide-react";
 
@@ -10,10 +11,19 @@ interface DocumentViewerModalProps {
 export default function DocumentViewerModal({ file, onClose }: DocumentViewerModalProps) {
   const [isMaximized, setIsMaximized] = useState(false);
 
+  useEffect(() => {
+    console.log('[DocumentViewerModal] Component mounted');
+    console.log('[DocumentViewerModal] Window width:', window.innerWidth);
+    console.log('[DocumentViewerModal] File:', file);
+  }, []);
+
   // close on ESC
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        console.log('[DocumentViewerModal] Escape key pressed - closing');
+        onClose();
+      }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
@@ -21,9 +31,9 @@ export default function DocumentViewerModal({ file, onClose }: DocumentViewerMod
 
   if (!file) return null;
 
-  return (
+  const modalContent = (
     <div
-      className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black/60 flex items-center justify-center z-[9999] p-4"
       onClick={onClose}
     >
       <Rnd
@@ -33,8 +43,8 @@ export default function DocumentViewerModal({ file, onClose }: DocumentViewerMod
           width: 900,
           height: 600,
         }}
-        minWidth={400}
-        minHeight={300}
+        minWidth={600}
+        minHeight={400}
         bounds="window"
         enableResizing={!isMaximized}
         disableDragging={isMaximized}
@@ -80,10 +90,11 @@ export default function DocumentViewerModal({ file, onClose }: DocumentViewerMod
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-hidden bg-slate-50">
+        <div className="flex-1 overflow-auto bg-slate-50" style={{ resize: 'both' }}>
           <iframe
             src={file.drive_web_view_link}
             className="w-full h-full"
+            style={{ minWidth: '600px', minHeight: '400px' }}
             title={file.name}
           />
         </div>
@@ -109,4 +120,6 @@ export default function DocumentViewerModal({ file, onClose }: DocumentViewerMod
       </Rnd>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }

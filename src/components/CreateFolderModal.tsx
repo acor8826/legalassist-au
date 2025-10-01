@@ -17,8 +17,10 @@ export default function CreateFolderModal({
 }: CreateFolderModalProps) {
   if (!isOpen) return null;
 
+  console.log('[CreateFolderModal] Rendered - isOpen:', isOpen);
+
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60]" onClick={onClose}>
       <div className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-md m-4" onClick={(e) => e.stopPropagation()}>
         <h2 className="text-xl font-semibold text-slate-900 mb-4">Create New Case File</h2>
         <input

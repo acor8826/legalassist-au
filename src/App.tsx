@@ -16,6 +16,7 @@ import TopBar from "./components/mobile/TopBar";
 import BottomNavigation from "./components/mobile/BottomNavigation";
 import FloatingActionButton from "./components/mobile/FloatingActionButton";
 import SearchOverlay from "./components/mobile/SearchOverlay";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 function AppContent() {
   const location = useLocation();
@@ -28,6 +29,16 @@ function AppContent() {
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
   const [isSearchOverlayOpen, setIsSearchOverlayOpen] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
+
+  React.useEffect(() => {
+    console.log('[App] Component mounted');
+    console.log('[App] Window width:', window.innerWidth);
+    console.log('[App] Initial location:', location.pathname);
+  }, []);
+
+  React.useEffect(() => {
+    console.log('[App] Location changed to:', location.pathname);
+  }, [location.pathname]);
 
   const folderId = location.pathname.startsWith("/folder/")
     ? location.pathname.split("/folder/")[1]
@@ -58,72 +69,94 @@ function AppContent() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-slate-50 text-slate-800">
-      {/* Mobile Top Bar */}
-      <TopBar onSearchClick={() => setIsSearchOverlayOpen(true)} />
+    <ErrorBoundary componentName="App">
+      <div className="h-screen flex flex-col bg-slate-50 text-slate-800">
+        {/* Mobile Top Bar - Add safe-area-top padding */}
+        <ErrorBoundary componentName="TopBar">
+          <TopBar onSearchClick={() => setIsSearchOverlayOpen(true)} />
+        </ErrorBoundary>
 
-      {/* Desktop Header */}
-      <div className="hidden md:block">
-        <Header
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          onSearchSubmit={handleSearch}
-        />
+        {/* Desktop Header */}
+        <div className="hidden md:block">
+          <ErrorBoundary componentName="Header">
+            <Header
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              onSearchSubmit={handleSearch}
+            />
+          </ErrorBoundary>
+        </div>
+
+        <div className="flex flex-1 overflow-hidden">
+          {/* Left Sidebar */}
+          <ErrorBoundary componentName="LeftSidebar">
+            <LeftSidebar
+              expandedSections={expandedNavSections}
+              onToggleSection={toggleNavSection}
+              isOpen={isSidebarOpen}
+              onClose={() => setIsSidebarOpen(false)}
+            />
+          </ErrorBoundary>
+
+          {/* Main Content */}
+          <main className="flex-1 overflow-y-auto pb-14 lg:pb-0">
+            <ErrorBoundary componentName="MainContent">
+              <Routes>
+                <Route path="/homepage" element={<Homepage />} />
+                <Route path="/*" element={<AIChat />} />
+              </Routes>
+            </ErrorBoundary>
+          </main>
+
+          {/* Right Sidebar */}
+          <ErrorBoundary componentName="RightSidebar">
+            <RightSidebar
+              folderId={folderId}
+              onCreateFolder={handleCreateFolder}
+              isOpen={isRightSidebarOpen}
+              onClose={() => setIsRightSidebarOpen(false)}
+            />
+          </ErrorBoundary>
+        </div>
+
+        {/* Footer */}
+        <ErrorBoundary componentName="Footer">
+          <Footer />
+        </ErrorBoundary>
+
+        {/* Floating Action Button */}
+        <ErrorBoundary componentName="FloatingActionButton">
+          <FloatingActionButton onClick={() => setShowCreateModal(true)} />
+        </ErrorBoundary>
+
+        {/* Bottom Navigation (mobile only) */}
+        <ErrorBoundary componentName="BottomNavigation">
+          <BottomNavigation
+            onToggleSidebar={() => setIsSidebarOpen((p) => !p)}
+            onToggleRightSidebar={() => setIsRightSidebarOpen((p) => !p)}
+          />
+        </ErrorBoundary>
+
+        {/* Create Folder Modal */}
+        <ErrorBoundary componentName="CreateFolderModal">
+          <CreateFolderModal
+            isOpen={showCreateModal}
+            folderName={folderName}
+            onFolderNameChange={setFolderName}
+            onClose={() => setShowCreateModal(false)}
+            onCreate={handleCreateFolder}
+          />
+        </ErrorBoundary>
+
+        {/* Search Overlay */}
+        <ErrorBoundary componentName="SearchOverlay">
+          <SearchOverlay
+            isOpen={isSearchOverlayOpen}
+            onClose={() => setIsSearchOverlayOpen(false)}
+          />
+        </ErrorBoundary>
       </div>
-
-      <div className="flex flex-1 overflow-hidden">
-        {/* Left Sidebar */}
-        <LeftSidebar
-          expandedSections={expandedNavSections}
-          onToggleSection={toggleNavSection}
-          isOpen={isSidebarOpen}
-          onClose={() => setIsSidebarOpen(false)}
-        />
-
-        {/* Main Content */}
-        <main className="flex-1 overflow-y-auto">
-          <Routes>
-            <Route path="/homepage" element={<Homepage />} />
-            <Route path="/*" element={<AIChat />} />
-          </Routes>
-        </main>
-
-        {/* Right Sidebar */}
-        <RightSidebar
-          folderId={folderId}
-          onCreateFolder={handleCreateFolder}
-          isOpen={isRightSidebarOpen}
-          onClose={() => setIsRightSidebarOpen(false)}
-        />
-      </div>
-
-      {/* Footer */}
-      <Footer />
-
-      {/* Floating Action Button */}
-      <FloatingActionButton onClick={() => setShowCreateModal(true)} />
-
-      {/* Bottom Navigation (mobile only) */}
-      <BottomNavigation
-        onToggleSidebar={() => setIsSidebarOpen((p) => !p)}
-        onToggleRightSidebar={() => setIsRightSidebarOpen((p) => !p)}
-      />
-
-      {/* Create Folder Modal */}
-      <CreateFolderModal
-        isOpen={showCreateModal}
-        folderName={folderName}
-        onFolderNameChange={setFolderName}
-        onClose={() => setShowCreateModal(false)}
-        onCreate={handleCreateFolder}
-      />
-
-      {/* Search Overlay */}
-      <SearchOverlay
-        isOpen={isSearchOverlayOpen}
-        onClose={() => setIsSearchOverlayOpen(false)}
-      />
-    </div>
+    </ErrorBoundary>
   );
 }
 
