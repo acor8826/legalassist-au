@@ -14,6 +14,15 @@ import DocumentViewerModal from "./DocumentViewerModal";
 let isApiCallInProgress = false;
 let cachedFolders: Folder[] | null = null;
 
+interface FileObject {
+  id: string;
+  name: string;
+  mime_type: string;
+  drive_file_id?: string;
+  drive_web_view_link?: string;
+  [key: string]: any; // Allow for additional properties
+}
+
 interface DocumentCardProps {
   folderId?: string | null;
 }
@@ -21,12 +30,12 @@ interface DocumentCardProps {
 export default function DocumentCard({ folderId }: DocumentCardProps) {
   const navigate = useNavigate();
   const [folders, setFolders] = useState<Folder[]>([]);
-  const [files, setFiles] = useState<any[]>([]);
+  const [files, setFiles] = useState<FileObject[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(
     new Set()
   );
-  const [previewFile, setPreviewFile] = useState<any | null>(null);
+  const [previewFile, setPreviewFile] = useState<FileObject | null>(null);
 
   const trees = useMemo(() => {
     if (folders.length === 0) return [];
@@ -84,11 +93,19 @@ export default function DocumentCard({ folderId }: DocumentCardProps) {
   const isFolder = (mimeType: string) =>
     mimeType === "application/vnd.google-apps.folder";
 
-  const handleItemClick = (file: any) => {
+  const handleItemClick = (file: FileObject) => {
     if (isFolder(file.mime_type)) {
       const folderIdToUse = file.drive_file_id || file.id;
       navigate(`/folder/${folderIdToUse}`);
     } else {
+      console.log("[DocumentCard] Setting previewFile:", {
+        id: file.id,
+        name: file.name,
+        mime_type: file.mime_type,
+        drive_file_id: file.drive_file_id,
+        drive_web_view_link: file.drive_web_view_link,
+        fullFile: file
+      });
       setPreviewFile(file);
     }
   };
