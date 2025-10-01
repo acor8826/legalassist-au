@@ -39,12 +39,12 @@ export default function DocumentViewerModal({ file, onClose }: DocumentViewerMod
       <Rnd
         default={{
           x: window.innerWidth / 2 - 450,
-          y: window.innerHeight / 2 - 300,
+          y: window.innerHeight / 2 - (window.innerHeight * 0.4),
           width: 900,
-          height: 600,
+          height: window.innerHeight * 0.8,
         }}
         minWidth={600}
-        minHeight={400}
+        minHeight={window.innerHeight * 0.3}
         bounds="window"
         enableResizing={!isMaximized}
         disableDragging={isMaximized}
@@ -90,11 +90,10 @@ export default function DocumentViewerModal({ file, onClose }: DocumentViewerMod
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-auto bg-slate-50" style={{ resize: 'both' }}>
+        <div className="flex-1 overflow-auto bg-slate-50">
           <iframe
             src={file.drive_web_view_link}
             className="w-full h-full"
-            style={{ minWidth: '600px', minHeight: '400px' }}
             title={file.name}
           />
         </div>
