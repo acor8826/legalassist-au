@@ -5,6 +5,7 @@ import {
   ChevronDown,
   ChevronRight,
   Home,
+  PlusCircle,
 } from "lucide-react";
 import { getList, Folder } from "../api/folders";
 import { buildFolderTree } from "../api/helpers/folderTree";
@@ -14,27 +15,26 @@ import DocumentViewerModal from "./DocumentViewerModal";
 let isApiCallInProgress = false;
 let cachedFolders: Folder[] | null = null;
 
-interface FileObject {
+export interface FileObject {
   id: string;
   name: string;
   mime_type: string;
   drive_file_id?: string;
   drive_web_view_link?: string;
-  [key: string]: any; // Allow for additional properties
+  [key: string]: any;
 }
 
 interface DocumentCardProps {
   folderId?: string | null;
+  onAddToChat?: (file: FileObject) => void;
 }
 
-export default function DocumentCard({ folderId }: DocumentCardProps) {
+export default function DocumentCard({ folderId, onAddToChat }: DocumentCardProps) {
   const navigate = useNavigate();
   const [folders, setFolders] = useState<Folder[]>([]);
   const [files, setFiles] = useState<FileObject[]>([]);
   const [loading, setLoading] = useState(true);
-  const [expandedFolders, setExpandedFolders] = useState<Set<string>>(
-    new Set()
-  );
+  const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
   const [previewFile, setPreviewFile] = useState<FileObject | null>(null);
 
   const trees = useMemo(() => {
@@ -98,14 +98,6 @@ export default function DocumentCard({ folderId }: DocumentCardProps) {
       const folderIdToUse = file.drive_file_id || file.id;
       navigate(`/folder/${folderIdToUse}`);
     } else {
-      console.log("[DocumentCard] Setting previewFile:", {
-        id: file.id,
-        name: file.name,
-        mime_type: file.mime_type,
-        drive_file_id: file.drive_file_id,
-        drive_web_view_link: file.drive_web_view_link,
-        fullFile: file
-      });
       setPreviewFile(file);
     }
   };
@@ -121,7 +113,6 @@ export default function DocumentCard({ folderId }: DocumentCardProps) {
 
   return (
     <>
-      {/* Folder or file list */}
       {folderId ? (
         <div className="space-y-3">
           <button
@@ -142,34 +133,47 @@ export default function DocumentCard({ folderId }: DocumentCardProps) {
                   key={file.id}
                   className="border border-slate-200 rounded-lg bg-white overflow-hidden hover:border-sky-300 transition-colors"
                 >
-                  <button
-                    onClick={() => handleItemClick(file)}
-                    className="w-full flex items-center gap-3 p-3 hover:bg-slate-50 transition-colors text-left"
-                  >
-                    <div
-                      className={`p-2 rounded-lg flex-shrink-0 ${
-                        isFolder(file.mime_type) ? "bg-yellow-50" : "bg-blue-50"
-                      }`}
+                  <div className="flex items-center justify-between">
+                    <button
+                      onClick={() => handleItemClick(file)}
+                      className="flex-1 flex items-center gap-3 p-3 hover:bg-slate-50 transition-colors text-left"
                     >
-                      <FolderIcon
-                        className={`w-5 h-5 ${
-                          isFolder(file.mime_type)
-                            ? "text-yellow-600"
-                            : "text-blue-600"
+                      <div
+                        className={`p-2 rounded-lg flex-shrink-0 ${
+                          isFolder(file.mime_type) ? "bg-yellow-50" : "bg-blue-50"
                         }`}
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-slate-900 truncate">
-                        {file.name}
-                      </h3>
-                      <p className="text-xs text-slate-500">
-                        {isFolder(file.mime_type)
-                          ? "Folder"
-                          : file.mime_type.split("/")[1]?.toUpperCase()}
-                      </p>
-                    </div>
-                  </button>
+                      >
+                        <FolderIcon
+                          className={`w-5 h-5 ${
+                            isFolder(file.mime_type)
+                              ? "text-yellow-600"
+                              : "text-blue-600"
+                          }`}
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-medium text-slate-900 truncate">
+                          {file.name}
+                        </h3>
+                        <p className="text-xs text-slate-500">
+                          {isFolder(file.mime_type)
+                            ? "Folder"
+                            : file.mime_type.split("/")[1]?.toUpperCase()}
+                        </p>
+                      </div>
+                    </button>
+
+                    {/* ✅ Add to Chat button */}
+                    {!isFolder(file.mime_type) && onAddToChat && (
+                      <button
+                        onClick={() => onAddToChat(file)}
+                        className="p-2 text-sky-600 hover:text-sky-800"
+                        title="Add to Chat"
+                      >
+                        <PlusCircle className="w-5 h-5" />
+                      </button>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -225,10 +229,7 @@ export default function DocumentCard({ folderId }: DocumentCardProps) {
       )}
 
       {/* Modal */}
-      <DocumentViewerModal
-        file={previewFile}
-        onClose={() => setPreviewFile(null)}
-      />
+      <DocumentViewerModal file={previewFile} onClose={() => setPreviewFile(null)} />
     </>
   );
 }
