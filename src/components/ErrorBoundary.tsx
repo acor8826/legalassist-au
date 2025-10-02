@@ -43,13 +43,9 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
       errorInfo
     });
 
-    // Call optional error handler
     if (onError) {
       onError(error, errorInfo);
     }
-
-    // You could also log to an error reporting service here
-    // logErrorToService(error, errorInfo);
   }
 
   handleReset = (): void => {
@@ -66,12 +62,10 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
     const { children, fallbackComponent, componentName } = this.props;
 
     if (hasError) {
-      // If custom fallback provided, use it
       if (fallbackComponent) {
         return fallbackComponent;
       }
 
-      // Default error UI
       return (
         <div className="flex items-center justify-center min-h-[400px] p-6 bg-slate-50">
           <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 space-y-4">
@@ -93,7 +87,7 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
             </div>
 
             {/* Error Details (Development only) */}
-            {process.env.NODE_ENV === 'development' && error && (
+            {import.meta.env.MODE === 'development' && error && (
               <details className="mt-4">
                 <summary className="cursor-pointer text-sm font-medium text-slate-700 hover:text-slate-900">
                   View Error Details

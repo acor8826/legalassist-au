@@ -1,7 +1,15 @@
 import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSwipeable } from "react-swipeable";
-import { Home as HomeIcon, FileText, Upload as UploadIcon, HelpCircle, ChevronDown, ChevronRight, X } from "lucide-react";
+import {
+  Home as HomeIcon,
+  FileText,
+  Upload as UploadIcon,
+  HelpCircle,
+  ChevronDown,
+  ChevronRight,
+  X,
+} from "lucide-react";
 
 interface LeftSidebarProps {
   expandedSections: Set<string>;
@@ -10,29 +18,35 @@ interface LeftSidebarProps {
   onClose: () => void;
 }
 
-export default function LeftSidebar({ expandedSections, onToggleSection, isOpen, onClose }: LeftSidebarProps) {
+export default function LeftSidebar({
+  expandedSections,
+  onToggleSection,
+  isOpen,
+  onClose,
+}: LeftSidebarProps) {
   const navigate = useNavigate();
   const sidebarRef = useRef<HTMLDivElement>(null);
   const firstFocusableRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    console.log('[LeftSidebar] Component mounted');
-    console.log('[LeftSidebar] Window width:', window.innerWidth);
-    console.log('[LeftSidebar] isOpen:', isOpen);
-    console.log('[LeftSidebar] Should show as drawer:', window.innerWidth < 768);
+    console.log("[LeftSidebar] Component mounted");
+    console.log("[LeftSidebar] Window width:", window.innerWidth);
+    console.log("[LeftSidebar] isOpen:", isOpen);
+    console.log(
+      "[LeftSidebar] Should show as drawer:",
+      window.innerWidth < 768
+    );
   }, []);
 
-  // Log isOpen changes
   useEffect(() => {
-    console.log('[LeftSidebar] isOpen changed:', isOpen);
+    console.log("[LeftSidebar] isOpen changed:", isOpen);
   }, [isOpen]);
 
-  // Swipe gesture handlers for mobile
+  // swipe handlers
   const swipeHandlers = useSwipeable({
     onSwipedLeft: () => {
-      console.log('[LeftSidebar] Swipe left detected');
+      console.log("[LeftSidebar] Swipe left detected");
       if (window.innerWidth < 768) {
-        console.log('[LeftSidebar] Closing sidebar');
         onClose();
       }
     },
@@ -40,39 +54,40 @@ export default function LeftSidebar({ expandedSections, onToggleSection, isOpen,
     trackTouch: true,
   });
 
-  // Handle escape key to close drawer on mobile
+  // remove ref from swipeHandlers to avoid clash
+  const { ref: _swipeRef, ...swipeableProps } = swipeHandlers;
+
+  // handle escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isOpen && window.innerWidth < 768) {
         onClose();
       }
     };
-
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
   }, [isOpen, onClose]);
 
-  // Focus management for accessibility
+  // focus management
   useEffect(() => {
     if (isOpen && window.innerWidth < 768 && firstFocusableRef.current) {
       firstFocusableRef.current.focus();
     }
   }, [isOpen]);
 
-  // Prevent body scroll when mobile drawer is open
+  // lock body scroll
   useEffect(() => {
     if (isOpen && window.innerWidth < 768) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
     }
-
     return () => {
       document.body.style.overflow = "unset";
     };
   }, [isOpen]);
 
-  // Handle click outside to close drawer on mobile
+  // click outside to close
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -84,14 +99,12 @@ export default function LeftSidebar({ expandedSections, onToggleSection, isOpen,
         onClose();
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen, onClose]);
 
   const handleNavigate = (path: string) => {
     navigate(path);
-    // Close drawer on mobile after navigation
     if (window.innerWidth < 768) {
       onClose();
     }
@@ -99,7 +112,7 @@ export default function LeftSidebar({ expandedSections, onToggleSection, isOpen,
 
   return (
     <>
-      {/* Backdrop overlay - Mobile only */}
+      {/* Backdrop */}
       <div
         className={`
           fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 md:hidden
@@ -112,7 +125,7 @@ export default function LeftSidebar({ expandedSections, onToggleSection, isOpen,
       {/* Sidebar */}
       <aside
         ref={sidebarRef}
-        {...swipeHandlers}
+        {...swipeableProps}
         className={`
           fixed md:static inset-y-0 left-0 z-50
           w-64 md:w-64
@@ -125,17 +138,15 @@ export default function LeftSidebar({ expandedSections, onToggleSection, isOpen,
         aria-label="Main navigation"
         aria-hidden={!isOpen && window.innerWidth < 768}
       >
-        {/* Mobile header with close button */}
+        {/* Mobile header */}
         <div className="md:hidden flex items-center justify-between p-4 border-b border-slate-200">
           <h2 className="text-lg font-semibold text-slate-900">Menu</h2>
           <button
             ref={firstFocusableRef}
             onClick={onClose}
-            className="
-              p-2 rounded-lg hover:bg-slate-100 transition-colors
+            className="p-2 rounded-lg hover:bg-slate-100 transition-colors
               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-              min-w-[44px] min-h-[44px] flex items-center justify-center
-            "
+              min-w-[44px] min-h-[44px] flex items-center justify-center"
             aria-label="Close navigation menu"
           >
             <X className="w-6 h-6 text-slate-600" />
@@ -143,21 +154,19 @@ export default function LeftSidebar({ expandedSections, onToggleSection, isOpen,
         </div>
 
         <div className="p-4 space-y-2">
-          {/* Main Navigation Section */}
+          {/* Navigation Section */}
           <div className="border border-slate-200 rounded-lg bg-white overflow-hidden">
             <button
               onClick={() => onToggleSection("main")}
-              className="
-                w-full flex items-center justify-between p-3
-                hover:bg-slate-50 active:bg-slate-100
-                transition-colors
-                focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500
-                min-h-[44px]
-              "
+              className="w-full flex items-center justify-between p-3 hover:bg-slate-50 active:bg-slate-100
+                transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500
+                min-h-[44px]"
               aria-expanded={expandedSections.has("main")}
               aria-controls="main-navigation"
             >
-              <span className="font-semibold text-slate-900 text-base">Navigation</span>
+              <span className="font-semibold text-slate-900 text-base">
+                Navigation
+              </span>
               {expandedSections.has("main") ? (
                 <ChevronDown className="w-5 h-5 text-slate-600" aria-hidden="true" />
               ) : (
@@ -169,58 +178,42 @@ export default function LeftSidebar({ expandedSections, onToggleSection, isOpen,
               <div id="main-navigation" className="border-t border-slate-200 bg-slate-50">
                 <button
                   onClick={() => handleNavigate("/")}
-                  className="
-                    w-full flex items-center gap-3 p-3
-                    hover:bg-white active:bg-slate-100
+                  className="w-full flex items-center gap-3 p-3 hover:bg-white active:bg-slate-100
                     transition-colors text-left border-b border-slate-100
-                    focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500
-                    min-h-[44px]
-                  "
+                    focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 min-h-[44px]"
                   aria-label="Go to home page"
                 >
-                  <HomeIcon className="w-5 h-5 text-slate-600 flex-shrink-0" aria-hidden="true" />
+                  <HomeIcon className="w-5 h-5 text-slate-600 flex-shrink-0" />
                   <span className="text-slate-700 text-base">Home</span>
                 </button>
                 <button
-                  onClick={() => handleNavigate("/")}
-                  className="
-                    w-full flex items-center gap-3 p-3
-                    hover:bg-white active:bg-slate-100
+                  onClick={() => handleNavigate("/documents")}
+                  className="w-full flex items-center gap-3 p-3 hover:bg-white active:bg-slate-100
                     transition-colors text-left border-b border-slate-100
-                    focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500
-                    min-h-[44px]
-                  "
+                    focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 min-h-[44px]"
                   aria-label="Go to documents page"
                 >
-                  <FileText className="w-5 h-5 text-slate-600 flex-shrink-0" aria-hidden="true" />
+                  <FileText className="w-5 h-5 text-slate-600 flex-shrink-0" />
                   <span className="text-slate-700 text-base">Documents</span>
                 </button>
                 <button
                   onClick={() => handleNavigate("/upload")}
-                  className="
-                    w-full flex items-center gap-3 p-3
-                    hover:bg-white active:bg-slate-100
+                  className="w-full flex items-center gap-3 p-3 hover:bg-white active:bg-slate-100
                     transition-colors text-left border-b border-slate-100
-                    focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500
-                    min-h-[44px]
-                  "
+                    focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 min-h-[44px]"
                   aria-label="Upload documents"
                 >
-                  <UploadIcon className="w-5 h-5 text-slate-600 flex-shrink-0" aria-hidden="true" />
+                  <UploadIcon className="w-5 h-5 text-slate-600 flex-shrink-0" />
                   <span className="text-slate-700 text-base">Upload</span>
                 </button>
                 <button
                   onClick={() => handleNavigate("/support")}
-                  className="
-                    w-full flex items-center gap-3 p-3
-                    hover:bg-white active:bg-slate-100
-                    transition-colors text-left
-                    focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500
-                    min-h-[44px]
-                  "
+                  className="w-full flex items-center gap-3 p-3 hover:bg-white active:bg-slate-100
+                    transition-colors text-left focus:outline-none focus:ring-2 focus:ring-inset
+                    focus:ring-blue-500 min-h-[44px]"
                   aria-label="Get support"
                 >
-                  <HelpCircle className="w-5 h-5 text-slate-600 flex-shrink-0" aria-hidden="true" />
+                  <HelpCircle className="w-5 h-5 text-slate-600 flex-shrink-0" />
                   <span className="text-slate-700 text-base">Support</span>
                 </button>
               </div>
@@ -231,17 +224,15 @@ export default function LeftSidebar({ expandedSections, onToggleSection, isOpen,
           <div className="border border-slate-200 rounded-lg bg-white overflow-hidden">
             <button
               onClick={() => onToggleSection("resources")}
-              className="
-                w-full flex items-center justify-between p-3
-                hover:bg-slate-50 active:bg-slate-100
-                transition-colors
-                focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500
-                min-h-[44px]
-              "
+              className="w-full flex items-center justify-between p-3 hover:bg-slate-50 active:bg-slate-100
+                transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500
+                min-h-[44px]"
               aria-expanded={expandedSections.has("resources")}
               aria-controls="resources-navigation"
             >
-              <span className="font-semibold text-slate-900 text-base">Resources</span>
+              <span className="font-semibold text-slate-900 text-base">
+                Resources
+              </span>
               {expandedSections.has("resources") ? (
                 <ChevronDown className="w-5 h-5 text-slate-600" aria-hidden="true" />
               ) : (
@@ -253,13 +244,9 @@ export default function LeftSidebar({ expandedSections, onToggleSection, isOpen,
               <div id="resources-navigation" className="border-t border-slate-200 bg-slate-50">
                 <a
                   href="#privacy"
-                  className="
-                    flex items-center gap-3 p-3
-                    hover:bg-white active:bg-slate-100
-                    transition-colors border-b border-slate-100
-                    focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500
-                    min-h-[44px]
-                  "
+                  className="flex items-center gap-3 p-3 hover:bg-white active:bg-slate-100
+                    transition-colors border-b border-slate-100 focus:outline-none
+                    focus:ring-2 focus:ring-inset focus:ring-blue-500 min-h-[44px]"
                   onClick={() => {
                     if (window.innerWidth < 768) onClose();
                   }}
@@ -268,13 +255,9 @@ export default function LeftSidebar({ expandedSections, onToggleSection, isOpen,
                 </a>
                 <a
                   href="#accessibility"
-                  className="
-                    flex items-center gap-3 p-3
-                    hover:bg-white active:bg-slate-100
-                    transition-colors border-b border-slate-100
-                    focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500
-                    min-h-[44px]
-                  "
+                  className="flex items-center gap-3 p-3 hover:bg-white active:bg-slate-100
+                    transition-colors border-b border-slate-100 focus:outline-none
+                    focus:ring-2 focus:ring-inset focus:ring-blue-500 min-h-[44px]"
                   onClick={() => {
                     if (window.innerWidth < 768) onClose();
                   }}
@@ -283,13 +266,9 @@ export default function LeftSidebar({ expandedSections, onToggleSection, isOpen,
                 </a>
                 <a
                   href="#legal-aid"
-                  className="
-                    flex items-center gap-3 p-3
-                    hover:bg-white active:bg-slate-100
-                    transition-colors
-                    focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500
-                    min-h-[44px]
-                  "
+                  className="flex items-center gap-3 p-3 hover:bg-white active:bg-slate-100
+                    transition-colors focus:outline-none focus:ring-2 focus:ring-inset
+                    focus:ring-blue-500 min-h-[44px]"
                   onClick={() => {
                     if (window.innerWidth < 768) onClose();
                   }}

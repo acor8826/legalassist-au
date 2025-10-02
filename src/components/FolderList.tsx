@@ -60,14 +60,8 @@ export default function FolderList() {
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
                         >
-                          <DocumentCard
-                            doc={{
-                              title: child.name,
-                              type: "Folder",
-                              date: "",
-                              suggestion: child.webViewLink,
-                            }}
-                          />
+                          {/* ✅ Pass folderId, not doc */}
+                          <DocumentCard folderId={child.id} />
                         </div>
                       )}
                     </Draggable>

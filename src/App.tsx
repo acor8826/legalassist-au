@@ -31,13 +31,17 @@ function AppContent() {
   const [showCreateModal, setShowCreateModal] = useState(false);
 
   React.useEffect(() => {
-    console.log('[App] Component mounted');
-    console.log('[App] Window width:', window.innerWidth);
-    console.log('[App] Initial location:', location.pathname);
+    if (import.meta.env.DEV) {
+      console.log("[App] Component mounted");
+      console.log("[App] Window width:", window.innerWidth);
+      console.log("[App] Initial location:", location.pathname);
+    }
   }, []);
 
   React.useEffect(() => {
-    console.log('[App] Location changed to:', location.pathname);
+    if (import.meta.env.DEV) {
+      console.log("[App] Location changed to:", location.pathname);
+    }
   }, [location.pathname]);
 
   const folderId = location.pathname.startsWith("/folder/")
@@ -71,7 +75,7 @@ function AppContent() {
   return (
     <ErrorBoundary componentName="App">
       <div className="h-screen flex flex-col bg-slate-50 text-slate-800">
-        {/* Mobile Top Bar - Add safe-area-top padding */}
+        {/* Mobile Top Bar */}
         <ErrorBoundary componentName="TopBar">
           <TopBar onSearchClick={() => setIsSearchOverlayOpen(true)} />
         </ErrorBoundary>
@@ -129,7 +133,7 @@ function AppContent() {
           <FloatingActionButton onClick={() => setShowCreateModal(true)} />
         </ErrorBoundary>
 
-        {/* Bottom Navigation (mobile only) */}
+        {/* Bottom Navigation */}
         <ErrorBoundary componentName="BottomNavigation">
           <BottomNavigation
             onToggleSidebar={() => setIsSidebarOpen((p) => !p)}

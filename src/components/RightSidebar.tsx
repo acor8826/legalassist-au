@@ -10,19 +10,24 @@ interface RightSidebarProps {
   onClose: () => void;
 }
 
-export default function RightSidebar({ folderId, onCreateFolder, isOpen, onClose }: RightSidebarProps) {
+export default function RightSidebar({
+  folderId,
+  onCreateFolder,
+  isOpen,
+  onClose,
+}: RightSidebarProps) {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const firstFocusableRef = useRef<HTMLButtonElement>(null);
   const [isAccordionOpen, setIsAccordionOpen] = useState(true);
 
   useEffect(() => {
-    console.log('[RightSidebar] Component mounted');
-    console.log('[RightSidebar] Window width:', window.innerWidth);
-    console.log('[RightSidebar] isOpen:', isOpen);
+    console.log("[RightSidebar] Component mounted");
+    console.log("[RightSidebar] Window width:", window.innerWidth);
+    console.log("[RightSidebar] isOpen:", isOpen);
   }, []);
 
   useEffect(() => {
-    console.log('[RightSidebar] isOpen changed:', isOpen);
+    console.log("[RightSidebar] isOpen changed:", isOpen);
   }, [isOpen]);
 
   // Swipe gesture handlers for mobile
@@ -35,6 +40,9 @@ export default function RightSidebar({ folderId, onCreateFolder, isOpen, onClose
     trackMouse: false,
     trackTouch: true,
   });
+
+  // ✅ Strip out `ref` to avoid conflict with sidebarRef
+  const { ref: _swipeRef, ...swipeableProps } = swipeHandlers;
 
   // Handle escape key to close on mobile
   useEffect(() => {
@@ -100,7 +108,7 @@ export default function RightSidebar({ folderId, onCreateFolder, isOpen, onClose
       {/* Sidebar */}
       <aside
         ref={sidebarRef}
-        {...swipeHandlers}
+        {...swipeableProps}
         className={`
           fixed md:static inset-y-0 right-0 z-50
           w-80 md:w-80 xl:w-96
@@ -195,11 +203,11 @@ export default function RightSidebar({ folderId, onCreateFolder, isOpen, onClose
           </div>
         </div>
 
-        {/* Content - visible on accordion open (mobile) or always (desktop) */}
+        {/* Content */}
         <div
           className={`
             p-4
-            ${window.innerWidth < 768 && !isAccordionOpen ? 'hidden md:block' : ''}
+            ${window.innerWidth < 768 && !isAccordionOpen ? "hidden md:block" : ""}
           `}
         >
           <DocumentCard folderId={folderId} />
