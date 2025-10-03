@@ -1,0 +1,43 @@
+## Critical (Blocking)
+
+1. **Implement proper sanitization or encoding of user-provided data before rendering it in the UI to address the potential XSS vulnerability.**
+   - Affected code: `DocumentViewerModal.tsx`
+
+2. **Implement server-side validation and authorization checks on the `document` object to prevent unauthorized access or modification.**
+   - Affected code: `useDocumentChat.ts`
+
+## High (Should Fix)
+
+1. **Review the modal's implementation to ensure that session tokens or other sensitive information are not exposed or leaked.**
+   - Affected code: `DocumentViewerModal.tsx`
+
+2. **Implement proper semantic structure and ARIA labeling for the `DocumentViewerModal` component.**
+   - Affected code: `DocumentViewerModal.tsx`
+
+3. **Implement proper focus management and trapping within the `DocumentViewerModal` component.**
+   - Affected code: `DocumentViewerModal.tsx`
+
+## Medium (Nice to Have)
+
+1. **Consider displaying generic error messages to the user and logging detailed error information on the server-side.**
+   - Affected code: `DocumentViewerModal.tsx`, `useDocumentChat.ts`
+
+2. **Implement comprehensive input validation on the `document` object to ensure that all fields are within the expected range and format.**
+   - Affected code: `useDocumentChat.ts`
+
+3. **Optimize the `DocumentViewerModal` component to reduce unnecessary renders and computations.**
+   - Affected code: `DocumentViewerModal.tsx`
+
+4. **Optimize the `useDocumentChat` hook to reduce unnecessary API calls.**
+   - Affected code: `useDocumentChat.ts`
+
+## Low (Future Improvement)
+
+1. **Improve the contrast and focus styles for the buttons in the `DocumentViewerModal` component.**
+   - Affected code: `DocumentViewerModal.tsx`, `styles.css`
+
+2. **Implement comprehensive automated accessibility tests for the `DocumentViewerModal` component.**
+   - Affected code: `DocumentViewerModal.test.tsx`
+
+3. **Implement comprehensive automated performance tests for the `DocumentViewerModal` component and the `useDocumentChat` hook.**
+   - Affected code: `DocumentViewerModal.performance.test.ts`

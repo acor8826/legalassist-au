@@ -1,0 +1,228 @@
+{
+  "componentArchitecture": {
+    "componentTree": {
+      "App": {
+        "ChatContext": {
+          "AIChat": {
+            "ChatMessage": {
+              "AttachedDocument": {}
+            }
+          },
+          "DocumentViewerModal": {
+            "AddToChat": {
+              "LoadingSpinner": {},
+              "SuccessToast": {},
+              "ErrorToast": {}
+            }
+          }
+        }
+      }
+    },
+    "propInterfaces": {
+      "AddToChat": {
+        "document": "Document",
+        "onAddToChat": "() => void",
+        "onError": "(error: Error) => void"
+      },
+      "LoadingSpinner": {
+        "size": "number",
+        "color": "string"
+      },
+      "SuccessToast": {
+        "message": "string"
+      },
+      "ErrorToast": {
+        "message": "string",
+        "onRetry": "() => void"
+      }
+    },
+    "stateManagement": {
+      "ChatContext": {
+        "chatMessages": "ChatMessage[]",
+        "addChatMessage": "(message: ChatMessage) => void"
+      },
+      "AddToChat": {
+        "status": "'idle' | 'loading' | 'success' | 'error'",
+        "errorMessage": "string | null"
+      }
+    },
+    "eventHandling": {
+      "AddToChat": {
+        "onClick": {
+          "idle": "startAddToChat",
+          "loading": "noop",
+          "success": "noop",
+          "error": "retryAddToChat"
+        }
+      }
+    }
+  },
+  "dataFlow": {
+    "apiEndpoints": {
+      "addDocumentToChat": {
+        "url": "/api/chat/documents",
+        "method": "POST",
+        "requestSchema": {
+          "document": "Document"
+        },
+        "responseSchema": {
+          "success": "boolean",
+          "message": "string"
+        }
+      }
+    },
+    "errorHandling": {
+      "retryLogic": {
+        "maxRetries": 3,
+        "retryDelay": {
+          "initial": 1000,
+          "multiplier": 2
+        }
+      },
+      "fallbackMessage": "An unexpected error occurred. Please try again later."
+    },
+    "caching": {
+      "strategy": "none"
+    }
+  },
+  "integrationPoints": {
+    "chatGptApi": {
+      "endpoint": "/api/chat",
+      "requestSchema": {
+        "prompt": "string"
+      },
+      "responseSchema": {
+        "response": "string"
+      }
+    },
+    "documentProcessing": {
+      "endpoint": "/api/documents",
+      "requestSchema": {
+        "file": "File"
+      },
+      "responseSchema": {
+        "success": "boolean",
+        "message": "string",
+        "previewUrl": "string"
+      }
+    },
+    "webSocketConnections": {
+      "chatUpdates": {
+        "url": "/ws/chat",
+        "events": {
+          "chatMessageAdded": {
+            "payload": "ChatMessage"
+          }
+        }
+      }
+    },
+    "eventBus": {
+      "topics": {
+        "documentAdded": {
+          "payload": "Document"
+        }
+      }
+    }
+  },
+  "performanceConsiderations": {
+    "codeSplitting": {
+      "strategy": "route-based",
+      "dynamicImports": [
+        "DocumentViewerModal",
+        "AIChat"
+      ]
+    },
+    "lazyLoading": {
+      "targets": [
+        "AttachedDocument"
+      ]
+    },
+    "memoization": {
+      "components": [
+        "ChatMessage"
+      ],
+      "functions": [
+        "formatDocumentPreview"
+      ]
+    },
+    "bundleOptimization": {
+      "treeshaking": true,
+      "compression": true,
+      "vendor": true
+    }
+  },
+  "securityArchitecture": {
+    "authentication": {
+      "strategy": "JWT",
+      "tokenRefreshLogic": {
+        "maxRetries": 3,
+        "retryDelay": {
+          "initial": 5000,
+          "multiplier": 2
+        }
+      }
+    },
+    "authorization": {
+      "rules": {
+        "addDocumentToChat": [
+          "ROLE_LEGAL_PROFESSIONAL"
+        ]
+      }
+    },
+    "dataEncryption": {
+      "strategy": "AES-256-GCM",
+      "encryptedFields": [
+        "document.content"
+      ]
+    },
+    "xssProtection": {
+      "sanitizeInputs": true,
+      "sanitizeOutputs": true
+    },
+    "csrfProtection": {
+      "strategy": "double-submit-cookie"
+    }
+  },
+  "testingStrategy": {
+    "unitTests": {
+      "targets": [
+        "AddToChat",
+        "LoadingSpinner",
+        "SuccessToast",
+        "ErrorToast"
+      ],
+      "coverage": ">90%"
+    },
+    "integrationTests": {
+      "boundaries": [
+        "ChatContext",
+        "addDocumentToChat",
+        "chatGptApi",
+        "documentProcessing"
+      ],
+      "coverage": ">80%"
+    },
+    "e2eTests": {
+      "scenarios": [
+        "User adds a document to the chat",
+        "User adds a document with a slow or unstable internet connection",
+        "User adds a very large document",
+        "User adds a document with an unsupported file type",
+        "User navigates away from the DocumentViewerModal while the document is being added"
+      ],
+      "coverage": ">70%"
+    },
+    "performanceTests": {
+      "metrics": [
+        "document addition time",
+        "chat responsiveness",
+        "memory usage"
+      ],
+      "targets": {
+        "documentAdditionTime": "<5s for 95% of cases",
+        "chatResponsiveness": "<200ms",
+        "memoryUsage": "<100MB"
+      }
+    }
+  }
+}

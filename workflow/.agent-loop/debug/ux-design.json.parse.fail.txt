@@ -1,0 +1,693 @@
+Failed to parse JSON for ux-design
+
+RAW:
+{
+  "component_hierarchy": {
+    "DocumentViewerModal": {
+      "DocumentPreview": {},
+      "DocumentMetadata": {},
+      "AddToChat": {
+        "LoadingSpinner": {},
+        "SuccessToast": {},
+        "ErrorToast": {
+          "RetryButton": {}
+        }
+      }
+    }
+  },
+  "interaction_flow": {
+    "user_clicks_add_to_chat_button": {
+      "states": [
+        "document_preview_displayed",
+        "loading_spinner_displayed",
+        "document_added_to_chat"
+      ],
+      "transitions": [
+        {
+          "from": "document_preview_displayed",
+          "to": "loading_spinner_displayed"
+        },
+        {
+          "from": "loading_spinner_displayed",
+          "to": "document_added_to_chat"
+        }
+      ]
+    },
+    "document_added_to_chat_successfully": {
+      "states": [
+        "success_toast_displayed"
+      ],
+      "transitions": [
+        {
+          "from": "document_added_to_chat",
+          "to": "success_toast_displayed"
+        }
+      ]
+    },
+    "error_adding_document_to_chat": {
+      "states": [
+        "error_toast_displayed",
+        "retry_button_displayed"
+      ],
+      "transitions": [
+        {
+          "from": "loading_spinner_displayed",
+          "to": "error_toast_displayed"
+        },
+        {
+          "from": "error_toast_displayed",
+          "to": "retry_button_displayed"
+        }
+      ]
+    }
+  },
+  "visual_specifications": {
+    "spacing": {
+      "document_preview": {
+        "padding": "16px"
+      },
+      "document_metadata": {
+        "padding": "12px 16px"
+      },
+      "add_to_chat_button": {
+        "margin": "16px"
+      },
+      "loading_spinner": {
+        "margin": "16px"
+      },
+      "success_toast": {
+        "padding": "12px 16px",
+        "margin": "16px"
+      },
+      "error_toast": {
+        "padding": "12px 16px",
+        "margin": "16px"
+      },
+      "retry_button": {
+        "margin": "0 16px 16px 16px"
+      }
+    },
+    "colors": {
+      "document_preview_background": "#F5F5F5",
+      "document_metadata_text": "#333333",
+      "add_to_chat_button_primary": "#007AFF",
+      "add_to_chat_button_hover": "#0056B3",
+      "loading_spinner_color": "#007AFF",
+      "success_toast_background": "#28A745",
+      "success_toast_text": "#FFFFFF",
+      "error_toast_background": "#DC3545",
+      "error_toast_text": "#FFFFFF",
+      "retry_button_text": "#007AFF"
+    },
+    "typography": {
+      "document_preview_title": {
+        "font-size": "18px",
+        "font-weight": "bold"
+      },
+      "document_metadata_label": {
+        "font-size": "14px",
+        "font-weight": "bold"
+      },
+      "document_metadata_value": {
+        "font-size": "14px"
+      },
+      "add_to_chat_button_text": {
+        "font-size": "16px",
+        "font-weight": "bold"
+      },
+      "success_toast_text": {
+        "font-size": "16px"
+      },
+      "error_toast_text": {
+        "font-size": "16px"
+      },
+      "retry_button_text": {
+        "font-size": "16px"
+      }
+    }
+  },
+  "accessibility_requirements": {
+    "keyboard_navigation": {
+      "add_to_chat_button": {
+        "focus_styles": {
+          "outline": "2px solid #007AFF",
+          "box-shadow": "0 0 0 4px rgba(0, 122, 255, 0.5)"
+        },
+        "enter_key_press": "triggers_add_to_chat_action"
+      },
+      "retry_button": {
+        "focus_styles": {
+          "outline": "2px solid #007AFF",
+          "box-shadow": "0 0 0 4px rgba(0, 122, 255, 0.5)"
+        },
+        "enter_key_press": "triggers_retry_action"
+      }
+    },
+    "screen_reader_support": {
+      "document_preview_title": "Announces the title of the document being previewed",
+      "document_metadata_labels": "Announces the labels for each metadata field",
+      "add_to_chat_button": "Announces the action of adding the document to the chat",
+      "loading_spinner": "Announces that the document is being added to the chat",
+      "success_toast": "Announces that the document was successfully added to the chat",
+      "error_toast": "Announces that there was an error adding the document to the chat",
+      "retry_button": "Announces the action of retrying the document upload"
+    },
+    "color_contrast": {
+      "document_metadata_text": "Meets WCAG 2.1 AA contrast ratio of 4.5:1 against the background",
+      "add_to_chat_button_text": "Meets WCAG 2.1 AA contrast ratio of 4.5:1 against the button background",
+      "success_toast_text": "Meets WCAG 2.1 AA contrast ratio of 4.5:1 against the toast background",
+      "error_toast_text": "Meets WCAG 2.1 AA contrast ratio of 4.5:1 against the toast background"
+    }
+  },
+  "responsive_behavior": {
+    "mobile": {
+      "document_preview": {
+        "width": "100%",
+        "height": "300px"
+      },
+      "document_metadata": {
+        "display": "block"
+      },
+      "add_to_chat_button": {
+        "width": "100%"
+      },
+      "loading_spinner": {
+        "margin-top": "24px"
+      },
+      "success_toast": {
+        "width": "100%",
+        "margin": "24px 16px"
+      },
+      "error_toast": {
+        "width": "100%",
+        "margin": "24px 16px"
+      },
+      "retry_button": {
+        "width": "100%",
+        "margin": "0 16px 24px 16px"
+      }
+    },
+    "tablet": {
+      "document_preview": {
+        "width": "100%",
+        "height": "400px"
+      },
+      "document_metadata": {
+        "display": "flex",
+        "justify-content": "space-between"
+      },
+      "add_to_chat_button": {
+        "width": "auto"
+      },
+      "loading_spinner": {
+        "margin-top": "16px"
+      },
+      "success_toast": {
+        "width": "auto",
+        "margin": "16px"
+      },
+      "error_toast": {
+        "width": "auto",
+        "margin": "16px"
+      },
+      "retry_button": {
+        "width": "auto",
+        "margin": "0 16px 16px 16px"
+      }
+    },
+    "desktop": {
+      "document_preview": {
+        "width": "100%",
+        "height": "500px"
+      },
+      "document_metadata": {
+        "display": "flex",
+        "justify-content": "space-between"
+      },
+      "add_to_chat_button": {
+        "width": "auto"
+      },
+      "loading_spinner": {
+        "margin-top": "16px"
+      },
+      "success_toast": {
+        "width": "auto",
+        "margin": "16px"
+      },
+      "error_toast": {
+        "width": "auto",
+        "margin": "16px"
+      },
+      "retry_button": {
+        "width": "auto",
+        "margin": "0 16px 16px 16px"
+      }
+    }
+  },
+  "animation_and_micro_interactions": {
+    "add_to_chat_button": {
+      "hover": {
+        "transform": "scale(1.05)",
+        "transition": "transform 0.2s ease-in-out"
+      },
+      "click": {
+        "transform": "scale(0.95)",
+        "transition": "transform 0.1s ease-in-out"
+      }
+    },
+    "loading_spinner": {
+      "animation": "rotate 2s linear infinite"
+    },
+    "success_toast": {
+      "enter": {
+        "transform": "translateY(100%)",
+        "opacity": "0",
+        "transition": "transform 0.3s ease-in-out, opacity 0.3s ease-in-out"
+      },
+      "enter_active": {
+        "transform": "translateY(0)",
+        "opacity": "1"
+      },
+      "exit": {
+        "transform": "translateY(100%)",
+        "opacity": "0",
+        "transition": "transform 0.3s ease-in-out, opacity 0.3s ease-in-out"
+      }
+    },
+    "error_toast": {
+      "enter": {
+        "transform": "translateY(100%)",
+        "opacity": "0",
+        "transition": "transform 0.3s ease-in-out, opacity 0.3s ease-in-out"
+      },
+      "enter_active": {
+        "transform": "translateY(0)",
+        "opacity": "1"
+      },
+      "exit": {
+        "transform": "translateY(100%)",
+        "opacity": "0",
+        "transition": "transform 0.3s ease-in-out, opacity 0.3s ease-in-out"
+      }
+    }
+  },
+  "error_states_and_empty_states": {
+    "error_adding_document_to_chat": {
+      "display": {
+        "error_toast": true,
+        "retry_button": true
+      },
+      "content": {
+        "error_toast_message": "There was an error adding the document to the chat. Please try again.",
+        "retry_button_label": "Retry"
+      }
+    }
+  },
+  "loading_patterns": {
+    "add_to_chat_action": {
+      "display": {
+        "loading_spinner": true
+      },
+      "content": {
+        "loading_spinner_message": "Adding document to chat..."
+      }
+    }
+  },
+  "keyboard_navigation_flow": {
+    "document_viewer_modal": [
+      {
+        "element": "document_preview",
+        "focus_order": 1,
+        "navigation": {
+          "tab": "moves_focus_to_document_metadata",
+          "shift_tab": "moves_focus_to_add_to_chat_button"
+        }
+      },
+      {
+        "element": "document_metadata",
+        "focus_order": 2,
+        "navigation": {
+          "tab": "moves_focus_to_add_to_chat_button",
+          "shift_tab": "moves_focus_to_document_preview"
+        }
+      },
+      {
+        "element": "add_to_chat_button",
+        "focus_order": 3,
+        "navigation": {
+          "tab": "moves_focus_to_document_preview",
+          "shift_tab": "moves_focus_to_document_metadata"
+        }
+      }
+    ],
+    "error_toast": [
+      
+
+CLEANED:
+{
+  "component_hierarchy": {
+    "DocumentViewerModal": {
+      "DocumentPreview": {},
+      "DocumentMetadata": {},
+      "AddToChat": {
+        "LoadingSpinner": {},
+        "SuccessToast": {},
+        "ErrorToast": {
+          "RetryButton": {}
+        }
+      }
+    }
+  },
+  "interaction_flow": {
+    "user_clicks_add_to_chat_button": {
+      "states": [
+        "document_preview_displayed",
+        "loading_spinner_displayed",
+        "document_added_to_chat"
+      ],
+      "transitions": [
+        {
+          "from": "document_preview_displayed",
+          "to": "loading_spinner_displayed"
+        },
+        {
+          "from": "loading_spinner_displayed",
+          "to": "document_added_to_chat"
+        }
+      ]
+    },
+    "document_added_to_chat_successfully": {
+      "states": [
+        "success_toast_displayed"
+      ],
+      "transitions": [
+        {
+          "from": "document_added_to_chat",
+          "to": "success_toast_displayed"
+        }
+      ]
+    },
+    "error_adding_document_to_chat": {
+      "states": [
+        "error_toast_displayed",
+        "retry_button_displayed"
+      ],
+      "transitions": [
+        {
+          "from": "loading_spinner_displayed",
+          "to": "error_toast_displayed"
+        },
+        {
+          "from": "error_toast_displayed",
+          "to": "retry_button_displayed"
+        }
+      ]
+    }
+  },
+  "visual_specifications": {
+    "spacing": {
+      "document_preview": {
+        "padding": "16px"
+      },
+      "document_metadata": {
+        "padding": "12px 16px"
+      },
+      "add_to_chat_button": {
+        "margin": "16px"
+      },
+      "loading_spinner": {
+        "margin": "16px"
+      },
+      "success_toast": {
+        "padding": "12px 16px",
+        "margin": "16px"
+      },
+      "error_toast": {
+        "padding": "12px 16px",
+        "margin": "16px"
+      },
+      "retry_button": {
+        "margin": "0 16px 16px 16px"
+      }
+    },
+    "colors": {
+      "document_preview_background": "#F5F5F5",
+      "document_metadata_text": "#333333",
+      "add_to_chat_button_primary": "#007AFF",
+      "add_to_chat_button_hover": "#0056B3",
+      "loading_spinner_color": "#007AFF",
+      "success_toast_background": "#28A745",
+      "success_toast_text": "#FFFFFF",
+      "error_toast_background": "#DC3545",
+      "error_toast_text": "#FFFFFF",
+      "retry_button_text": "#007AFF"
+    },
+    "typography": {
+      "document_preview_title": {
+        "font-size": "18px",
+        "font-weight": "bold"
+      },
+      "document_metadata_label": {
+        "font-size": "14px",
+        "font-weight": "bold"
+      },
+      "document_metadata_value": {
+        "font-size": "14px"
+      },
+      "add_to_chat_button_text": {
+        "font-size": "16px",
+        "font-weight": "bold"
+      },
+      "success_toast_text": {
+        "font-size": "16px"
+      },
+      "error_toast_text": {
+        "font-size": "16px"
+      },
+      "retry_button_text": {
+        "font-size": "16px"
+      }
+    }
+  },
+  "accessibility_requirements": {
+    "keyboard_navigation": {
+      "add_to_chat_button": {
+        "focus_styles": {
+          "outline": "2px solid #007AFF",
+          "box-shadow": "0 0 0 4px rgba(0, 122, 255, 0.5)"
+        },
+        "enter_key_press": "triggers_add_to_chat_action"
+      },
+      "retry_button": {
+        "focus_styles": {
+          "outline": "2px solid #007AFF",
+          "box-shadow": "0 0 0 4px rgba(0, 122, 255, 0.5)"
+        },
+        "enter_key_press": "triggers_retry_action"
+      }
+    },
+    "screen_reader_support": {
+      "document_preview_title": "Announces the title of the document being previewed",
+      "document_metadata_labels": "Announces the labels for each metadata field",
+      "add_to_chat_button": "Announces the action of adding the document to the chat",
+      "loading_spinner": "Announces that the document is being added to the chat",
+      "success_toast": "Announces that the document was successfully added to the chat",
+      "error_toast": "Announces that there was an error adding the document to the chat",
+      "retry_button": "Announces the action of retrying the document upload"
+    },
+    "color_contrast": {
+      "document_metadata_text": "Meets WCAG 2.1 AA contrast ratio of 4.5:1 against the background",
+      "add_to_chat_button_text": "Meets WCAG 2.1 AA contrast ratio of 4.5:1 against the button background",
+      "success_toast_text": "Meets WCAG 2.1 AA contrast ratio of 4.5:1 against the toast background",
+      "error_toast_text": "Meets WCAG 2.1 AA contrast ratio of 4.5:1 against the toast background"
+    }
+  },
+  "responsive_behavior": {
+    "mobile": {
+      "document_preview": {
+        "width": "100%",
+        "height": "300px"
+      },
+      "document_metadata": {
+        "display": "block"
+      },
+      "add_to_chat_button": {
+        "width": "100%"
+      },
+      "loading_spinner": {
+        "margin-top": "24px"
+      },
+      "success_toast": {
+        "width": "100%",
+        "margin": "24px 16px"
+      },
+      "error_toast": {
+        "width": "100%",
+        "margin": "24px 16px"
+      },
+      "retry_button": {
+        "width": "100%",
+        "margin": "0 16px 24px 16px"
+      }
+    },
+    "tablet": {
+      "document_preview": {
+        "width": "100%",
+        "height": "400px"
+      },
+      "document_metadata": {
+        "display": "flex",
+        "justify-content": "space-between"
+      },
+      "add_to_chat_button": {
+        "width": "auto"
+      },
+      "loading_spinner": {
+        "margin-top": "16px"
+      },
+      "success_toast": {
+        "width": "auto",
+        "margin": "16px"
+      },
+      "error_toast": {
+        "width": "auto",
+        "margin": "16px"
+      },
+      "retry_button": {
+        "width": "auto",
+        "margin": "0 16px 16px 16px"
+      }
+    },
+    "desktop": {
+      "document_preview": {
+        "width": "100%",
+        "height": "500px"
+      },
+      "document_metadata": {
+        "display": "flex",
+        "justify-content": "space-between"
+      },
+      "add_to_chat_button": {
+        "width": "auto"
+      },
+      "loading_spinner": {
+        "margin-top": "16px"
+      },
+      "success_toast": {
+        "width": "auto",
+        "margin": "16px"
+      },
+      "error_toast": {
+        "width": "auto",
+        "margin": "16px"
+      },
+      "retry_button": {
+        "width": "auto",
+        "margin": "0 16px 16px 16px"
+      }
+    }
+  },
+  "animation_and_micro_interactions": {
+    "add_to_chat_button": {
+      "hover": {
+        "transform": "scale(1.05)",
+        "transition": "transform 0.2s ease-in-out"
+      },
+      "click": {
+        "transform": "scale(0.95)",
+        "transition": "transform 0.1s ease-in-out"
+      }
+    },
+    "loading_spinner": {
+      "animation": "rotate 2s linear infinite"
+    },
+    "success_toast": {
+      "enter": {
+        "transform": "translateY(100%)",
+        "opacity": "0",
+        "transition": "transform 0.3s ease-in-out, opacity 0.3s ease-in-out"
+      },
+      "enter_active": {
+        "transform": "translateY(0)",
+        "opacity": "1"
+      },
+      "exit": {
+        "transform": "translateY(100%)",
+        "opacity": "0",
+        "transition": "transform 0.3s ease-in-out, opacity 0.3s ease-in-out"
+      }
+    },
+    "error_toast": {
+      "enter": {
+        "transform": "translateY(100%)",
+        "opacity": "0",
+        "transition": "transform 0.3s ease-in-out, opacity 0.3s ease-in-out"
+      },
+      "enter_active": {
+        "transform": "translateY(0)",
+        "opacity": "1"
+      },
+      "exit": {
+        "transform": "translateY(100%)",
+        "opacity": "0",
+        "transition": "transform 0.3s ease-in-out, opacity 0.3s ease-in-out"
+      }
+    }
+  },
+  "error_states_and_empty_states": {
+    "error_adding_document_to_chat": {
+      "display": {
+        "error_toast": true,
+        "retry_button": true
+      },
+      "content": {
+        "error_toast_message": "There was an error adding the document to the chat. Please try again.",
+        "retry_button_label": "Retry"
+      }
+    }
+  },
+  "loading_patterns": {
+    "add_to_chat_action": {
+      "display": {
+        "loading_spinner": true
+      },
+      "content": {
+        "loading_spinner_message": "Adding document to chat..."
+      }
+    }
+  },
+  "keyboard_navigation_flow": {
+    "document_viewer_modal": [
+      {
+        "element": "document_preview",
+        "focus_order": 1,
+        "navigation": {
+          "tab": "moves_focus_to_document_metadata",
+          "shift_tab": "moves_focus_to_add_to_chat_button"
+        }
+      },
+      {
+        "element": "document_metadata",
+        "focus_order": 2,
+        "navigation": {
+          "tab": "moves_focus_to_add_to_chat_button",
+          "shift_tab": "moves_focus_to_document_preview"
+        }
+      },
+      {
+        "element": "add_to_chat_button",
+        "focus_order": 3,
+        "navigation": {
+          "tab": "moves_focus_to_document_preview",
+          "shift_tab": "moves_focus_to_document_metadata"
+        }
+      }
+    ],
+    "error_toast": [
+
+ERROR:
+SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>)
+    at parseJSONorThrow (file:///C:/Users/acor8/OneDrive/Desktop/legalassist-au/workflow/workflow.js:69:25)
+    at async uxDesignerAgent (file:///C:/Users/acor8/OneDrive/Desktop/legalassist-au/workflow/workflow.js:276:18)
+    at async main (file:///C:/Users/acor8/OneDrive/Desktop/legalassist-au/workflow/workflow.js:869:21)

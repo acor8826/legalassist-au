@@ -1,0 +1,16 @@
+{
+  "name": "legal-workflow",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.3",
+    "dotenv": "^16.6.1",
+    "lucide-react": "^0.544.0",
+    "puppeteer": "^24.23.0",
+    "react-hot-toast": "^2.6.0"
+  }
+}

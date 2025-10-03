@@ -1,0 +1,26 @@
+SyntaxError: Unexpected token '`', "```json
+{
+"... is not valid JSON
+    at JSON.parse (<anonymous>)
+    at productManagerAgent (file:///C:/Users/acor8/OneDrive/Desktop/legalassist-au/workflow/workflow.js:113:15)
+    at async main (file:///C:/Users/acor8/OneDrive/Desktop/legalassist-au/workflow/workflow.js:661:26)2025-10-02T09:01:38.454Z
+Error: Failed to parse JSON for ux-design. See .agent-loop/debug/ux-design.json.parse.fail.txt
+    at parseJSONorThrow (file:///C:/Users/acor8/OneDrive/Desktop/legalassist-au/workflow/workflow.js:95:11)
+    at async uxDesignerAgent (file:///C:/Users/acor8/OneDrive/Desktop/legalassist-au/workflow/workflow.js:276:18)
+    at async main (file:///C:/Users/acor8/OneDrive/Desktop/legalassist-au/workflow/workflow.js:869:21)
+2025-10-02T09:03:43.797Z
+Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"max_tokens: 8000 > 4096, which is the maximum allowed number of output tokens for claude-3-haiku-20240307"},"request_id":"req_011CTi6ubxN3mcTdzQuQAUXc"}
+    at APIError.generate (file:///C:/Users/acor8/OneDrive/Desktop/legalassist-au/workflow/node_modules/@anthropic-ai/sdk/error.mjs:36:20)
+    at Anthropic.makeStatusError (file:///C:/Users/acor8/OneDrive/Desktop/legalassist-au/workflow/node_modules/@anthropic-ai/sdk/core.mjs:268:25)
+    at Anthropic.makeRequest (file:///C:/Users/acor8/OneDrive/Desktop/legalassist-au/workflow/node_modules/@anthropic-ai/sdk/core.mjs:311:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async frontendDeveloperAgent (file:///C:/Users/acor8/OneDrive/Desktop/legalassist-au/workflow/workflow.js:362:16)
+    at async main (file:///C:/Users/acor8/OneDrive/Desktop/legalassist-au/workflow/workflow.js:889:24)
+2025-10-02T09:06:10.541Z
+Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"max_tokens: 5000 > 4096, which is the maximum allowed number of output tokens for claude-3-haiku-20240307"},"request_id":"req_011CTi76QcYEna5cG179oUbz"}
+    at APIError.generate (file:///C:/Users/acor8/OneDrive/Desktop/legalassist-au/workflow/node_modules/@anthropic-ai/sdk/error.mjs:36:20)
+    at Anthropic.makeStatusError (file:///C:/Users/acor8/OneDrive/Desktop/legalassist-au/workflow/node_modules/@anthropic-ai/sdk/core.mjs:268:25)
+    at Anthropic.makeRequest (file:///C:/Users/acor8/OneDrive/Desktop/legalassist-au/workflow/node_modules/@anthropic-ai/sdk/core.mjs:311:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async apiDeveloperAgent (file:///C:/Users/acor8/OneDrive/Desktop/legalassist-au/workflow/workflow.js:432:16)
+    at async main (file:///C:/Users/acor8/OneDrive/Desktop/legalassist-au/workflow/workflow.js:893:29)

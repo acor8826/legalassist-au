@@ -1,0 +1,130 @@
+{
+  "componentHierarchy": {
+    "DocumentViewerModal": {
+      "AddToChat": {
+        "LoadingSpinner": {},
+        "SuccessToast": {},
+        "ErrorToast": {}
+      }
+    },
+    "AIChat": {
+      "ChatMessage": {
+        "AttachedDocument": {}
+      }
+    }
+  },
+  "interactionFlow": {
+    "userClicks": {
+      "AddToChat": {
+        "states": [
+          "idle",
+          "loading",
+          "success",
+          "error"
+        ],
+        "transitions": {
+          "idle": "loading",
+          "loading": ["success", "error"],
+          "success": "idle",
+          "error": "idle"
+        }
+      }
+    }
+  },
+  "visualSpecifications": {
+    "spacing": {
+      "buttonPadding": "16px 24px",
+      "toastMargin": "16px"
+    },
+    "colors": {
+      "primary": "#0077B6",
+      "success": "#4CAF50",
+      "error": "#F44336"
+    },
+    "typography": {
+      "buttonText": {
+        "fontSize": "16px",
+        "fontWeight": "bold"
+      },
+      "toastText": {
+        "fontSize": "14px",
+        "fontWeight": "normal"
+      }
+    }
+  },
+  "accessibilityRequirements": {
+    "screenReaderAnnouncements": {
+      "AddToChat": {
+        "idle": "Add document to chat",
+        "loading": "Adding document to chat",
+        "success": "Document added to chat",
+        "error": "Failed to add document to chat"
+      }
+    },
+    "keyboardNavigation": {
+      "AddToChat": {
+        "activationKeys": ["Enter", "Space"]
+      }
+    }
+  },
+  "responsiveBehavior": {
+    "mobile": {
+      "buttonSize": "full-width",
+      "toastPosition": "bottom"
+    },
+    "tablet": {
+      "buttonSize": "auto",
+      "toastPosition": "top-right"
+    },
+    "desktop": {
+      "buttonSize": "auto",
+      "toastPosition": "top-right"
+    }
+  },
+  "animationAndMicroInteractions": {
+    "AddToChat": {
+      "loadingSpinner": {
+        "type": "rotating-circle",
+        "size": "24px",
+        "color": "#FFFFFF"
+      },
+      "successToast": {
+        "type": "slide-in",
+        "duration": "3000ms"
+      },
+      "errorToast": {
+        "type": "shake",
+        "duration": "500ms"
+      }
+    }
+  },
+  "errorStatesAndEmptyStates": {
+    "AddToChat": {
+      "error": {
+        "message": "Failed to add document to chat. Please try again.",
+        "retryButton": {
+          "label": "Retry",
+          "onClick": "retryAddToChat"
+        }
+      }
+    }
+  },
+  "loadingPatterns": {
+    "AddToChat": {
+      "loadingSpinner": {
+        "display": "inline-block",
+        "marginRight": "8px"
+      }
+    }
+  },
+  "keyboardNavigationFlow": {
+    "AddToChat": {
+      "onFocus": {
+        "announceState": true
+      },
+      "onActivate": {
+        "triggerAddToChat": true
+      }
+    }
+  }
+}

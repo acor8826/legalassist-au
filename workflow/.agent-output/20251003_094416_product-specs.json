@@ -1,0 +1,69 @@
+{
+  "featureBreakdown": {
+    "currentState": {
+      "documentViewerModal": {
+        "file": "DocumentViewerModal.tsx",
+        "lines": "47-59",
+        "description": "Basic button exists (PlusCircle icon, missing a11y/loading/toasts). onAddToChat exists but not integrated."
+      },
+      "aiChat": {
+        "file": "AIChat.tsx",
+        "lines": "164-172",
+        "description": "addFileToChat exposed via ref; handles attachments."
+      },
+      "integration": "App.tsx renders AIChat directly; DocumentViewerModal not wired; no toast library installed."
+    },
+    "implementationPlan": {
+      "phase1": {
+        "tasks": [
+          "Install toast lib (react-hot-toast or sonner). Create ToastProvider.",
+          "Create ChatContext.tsx to expose AIChat ref globally.",
+          "Wire DocumentViewerModal to call AIChat.addFileToChat."
+        ]
+      },
+      "phase2": {
+        "tasks": [
+          "Switch icon to MessageSquarePlus, loading spinner, toasts, retry, error boundary.",
+          "A11y: aria-labels, aria-busy, aria-live; keyboard support; focus management."
+        ]
+      },
+      "phase3": {
+        "tasks": [
+          "Install @testing-library/react, @testing-library/jest-dom, vitest.",
+          "Tests for states (idle/loading/success/error), integration, a11y, edge cases.",
+          "Coverage >85%."
+        ]
+      },
+      "phase4": {
+        "tasks": [
+          "Ensure use in DocumentCard and other previews."
+        ]
+      }
+    },
+    "coreRequirements": [
+      "Button in modal header (next to Drive button)",
+      "Use MessageSquarePlus icon (lucide-react)",
+      "Text: \"Add to Chat\"",
+      "On click send document ref/content to ChatGPT",
+      "Loading spinner while processing",
+      "Success toast \"Document added to chat\"",
+      "Error toast with retry",
+      "WCAG 2.1 AA a11y (ARIA/keyboard/screen reader)",
+      "Works for Docs/Sheets/Slides/PDFs/forms",
+      "Tests >85%"
+    ],
+    "legalDocumentRequirements": [
+      "Preserve metadata (case number, filing date, type)",
+      "Chain of custody, redaction markers, privileged/confidential markers",
+      "Citation formatting, batch add, preview before send, page numbers"
+    ],
+    "technicalRequirements": [
+      "TypeScript strict (no any), Tailwind w/ dark mode",
+      "Use toast system, follow component patterns",
+      "Error boundaries, skeleton loading",
+      "Optimistic UI with rollback",
+      "Debounce + cancel; memory leak prevention",
+      "WebSocket updates supported"
+    ]
+  }
+}
